@@ -2,20 +2,39 @@
 
 using namespace std;
 
-bool polynomZhegalkina(int numbersVar, int numbersArg){
+bool polynomZhegalkina(int numbersArg, int numbersSummand){
 
-    bool result = false;
+    //Fill an array of arguments with their values
+    bool *arrayArg = new bool[numbersArg];
 
     for (size_t i = 0; i < numbersArg; i++){
-        bool value = true;
-        for (size_t j = 0; j < numbersVar; j++){
-            bool arg;
-            cout << "Enter the value of argument" << endl;
-            cin >> arg;
-            value &= arg;
+        cout << "Enter the value of argument" << endl;
+        cin >> arrayArg[i];
+    }
+
+    //Fill an array of summand
+    bool **arraySummand = new bool*[numbersSummand]; //raws
+
+    for (size_t i = 0; i < numbersSummand; i++)
+        arraySummand[i] = new bool[numbersArg]; //column
+
+    for (size_t i = 0; i < numbersSummand; i++)
+        for (size_t j = 0; j < numbersArg; j++){
+            cout << "Print summand" << endl;
+            cin >> arraySummand[i][j];
+            if (arraySummand[i][j] == true) arraySummand[i][j] = false;
+            else arraySummand[i][j] = true;
         }
+
+    //Computation of the polynomial
+    bool result = false;
+    for (size_t i = 0; i < numbersSummand; i++){
+        bool value = true;
+        for (size_t j = 0; j < numbersArg; j++)
+            value &= (arraySummand[i][j] | arrayArg[j]);
         result = (~result | ~value) & (result | value);
     }
+
     return result;
 }
 
