@@ -4,6 +4,8 @@ using namespace std;
 
 bool polynomZhegalkina(int numbersArg, int numbersSummand){
 
+    //You need to change the data structure
+
     //Fill an array of arguments with their values
     bool *arrayArg = new bool[numbersArg];
 
