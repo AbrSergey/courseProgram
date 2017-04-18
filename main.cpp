@@ -1,40 +1,32 @@
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 
-bool polynomZhegalkina(int numbersArg, int numbersSummand){
-
-    //You need to change the data structure
-
-    //Fill an array of arguments with their values
-    bool *arrayArg = new bool[numbersArg];
-
-    for (size_t i = 0; i < numbersArg; i++){
-        cout << "Enter the value of argument" << endl;
-        cin >> arrayArg[i];
-    }
-
-    //Fill an array of summand
-    bool **arraySummand = new bool*[numbersSummand]; //raws
-
-    for (size_t i = 0; i < numbersSummand; i++)
-        arraySummand[i] = new bool[numbersArg]; //column
-
-    for (size_t i = 0; i < numbersSummand; i++)
-        for (size_t j = 0; j < numbersArg; j++){
-            cout << "Print summand" << endl;
-            cin >> arraySummand[i][j];
-            if (arraySummand[i][j] == true) arraySummand[i][j] = false;
-            else arraySummand[i][j] = true;
-        }
+bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum){
 
     //Computation of the polynomial
-    bool result = false;
-    for (size_t i = 0; i < numbersSummand; i++){
-        bool value = true;
-        for (size_t j = 0; j < numbersArg; j++)
-            value &= (arraySummand[i][j] | arrayArg[j]);
-        result = (~result | ~value) & (result | value);
+
+    bool result = false, x = false;
+    unsigned int valueSum = 0, value = 0;
+
+    for (int i = 0; i < lenSum; i++){
+        value = arg & summand[i];
+        x = false;
+        for (int j = 0; j < sizeof(value)*8; j++){
+            x |= value;
+            if (x == true) break;
+            value <<= 1;
+        }
+        valueSum |= x;
+        valueSum <<= 1;
+    }
+    valueSum >>= 1; //???
+
+    for (int i = 0; i < lenSum; i++){
+        x = valueSum & 1;
+        valueSum >>= 1;
+        result = (~result | ~x) & (result | x);
     }
 
     return result;
@@ -44,7 +36,43 @@ int main()
 {
     cout << "Hello World!" << endl;
 
-    bool x = polynomZhegalkina(3,3);
+    //Fill an array of arguments with their values
+    bool x;
+    int lenArg, lenSum;
+    unsigned int arg = 0;
+
+    cout << "Enter the number of arguments" << endl;
+    cin >> lenArg;
+
+    for (int i = 0; i < lenArg; i++){
+        cout << "Value of " << i << " argument" << endl;
+        cin >> x;
+        arg |= x;
+        arg <<= 1;
+    }
+    arg >>= 1; //???
+
+    //Fill an array of summand
+    cout << "Enter the number of summands" << endl;
+    cin >> lenSum;
+
+    unsigned int *sum = new unsigned int[lenSum];
+
+    for (int i = 0; i < lenSum; i++) sum[i] = 0;
+
+    for (int i = 0; i < lenSum; i++){
+        for (int j = 0; j < lenArg; j++){
+            cout << j << " argument in " << i << " summand" << endl;
+            cin >> x;
+            if (x == true) x = false;
+            else x = true;
+            sum[i] |= x;
+            sum[i] <<= 1;
+        }
+        sum[i] >>= 1; //???
+    }
+
+    x = polynomZhegalkina(arg, sum, lenSum);
 
     cout << "Answer: " << x << endl;
 
