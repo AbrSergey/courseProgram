@@ -93,7 +93,15 @@ int main()
 
     srand(time(0));
 
-    for(int i = 0; i < 300000; i++) inputRandom(30,30);
+    clock_t start;
+    double duration;
+    start = std::clock();
+
+    for(int i = 0; i < 100000; i++) inputRandom(30,5000);
+
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+
+    cout << "polynomZhegalkina = " << duration << endl;
 
     return 0;
 }
