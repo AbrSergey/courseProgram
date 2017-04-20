@@ -3,3 +3,7 @@ program.pro
 program.pro.user
 /build
 .gitignore.swp
+.gitignore
+Makefile
+main.o
+program

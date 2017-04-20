@@ -5,33 +5,17 @@
 
 using namespace std;
 
-bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum, int lenArg){
+bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum){
 
     //Computation of the polynomial
 
-    bool result = false, x;
-    unsigned int valueSum = 0, value = 0;
+    bool result = 0;
 
-    for (int i = 0; i < lenSum; i++){
-        value = arg | summand[i];
-        x = true;
-        for (int j = 0; j < lenArg; j++){
-            x &= value;
-            if (x == false) break;
-            value >>= 1;
-        }
-        valueSum |= x;
-        valueSum <<= 1;
-    }
-    valueSum >>= 1; //???
-
-    for (int i = 0; i < lenSum; i++){
-        x = valueSum & 1;
-        valueSum >>= 1;
-        result = (~result | ~x) & (result | x);
-    }
+    for (int i = 0; i < lenSum; i++)
+        if ((arg & summand[i]) == summand[i]) result ^= 1;
 
     return result;
+
 }
 
 void inputConsole (){
@@ -63,15 +47,13 @@ void inputConsole (){
         for (int j = 0; j < lenArg; j++){
             cout << j << " argument in " << i << " summand" << endl;
             cin >> x;
-            if (x == true) x = false;
-            else x = true;
             sum[i] |= x;
             sum[i] <<= 1;
         }
         sum[i] >>= 1; //???
     }
 
-    x = polynomZhegalkina(arg, sum, lenSum, lenArg);
+    x = polynomZhegalkina(arg, sum, lenSum);
 
     cout << "Answer: " << x << endl;
 }
@@ -96,15 +78,13 @@ void inputRandom (int lenArg, int lenSum){
     for (int i = 0; i < lenSum; i++){
         for (int j = 0; j < lenArg; j++){
             x = rand() % 2;
-            if (x == true) x = false;
-            else x = true;
             sum[i] |= x;
             sum[i] <<= 1;
         }
         sum[i] >>= 1; //???
     }
 
-    x = polynomZhegalkina(arg, sum, lenSum, lenArg);
+    x = polynomZhegalkina(arg, sum, lenSum);
 }
 
 int main()
@@ -113,7 +93,7 @@ int main()
 
     srand(time(0));
 
-    for(int i = 0; i < 3; i++) inputRandom(3,3);
+    for(int i = 0; i < 300000; i++) inputRandom(30,30);
 
     return 0;
 }
