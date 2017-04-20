@@ -61,30 +61,18 @@ void inputConsole (){
 void inputRandom (int lenArg, int lenSum){
 
     //Fill an array of arguments with their values
-    bool x;
-    unsigned int arg = 0;
-
-    for (int i = 0; i < lenArg; i++){
-        x = rand() % 2;
-        arg |= x;
-        arg <<= 1;
-    }
-    arg >>= 1; //???
+    unsigned int arg = rand();
 
     //Fill an array of summand
     unsigned int *sum = new unsigned int[lenSum];
     for (int i = 0; i < lenSum; i++) sum[i] = 0;
 
     for (int i = 0; i < lenSum; i++){
-        for (int j = 0; j < lenArg; j++){
-            x = rand() % 2;
-            sum[i] |= x;
-            sum[i] <<= 1;
-        }
-        sum[i] >>= 1; //???
+        sum[i] = rand() << (sizeof(unsigned int)*8 - lenArg);
+        sum[i] >>= (sizeof(unsigned int)*8 - lenArg);
     }
 
-    x = polynomZhegalkina(arg, sum, lenSum);
+    bool x = polynomZhegalkina(arg, sum, lenSum);
 }
 
 int main()
@@ -97,7 +85,7 @@ int main()
     double duration;
     start = std::clock();
 
-    for(int i = 0; i < 100000; i++) inputRandom(30,5000);
+    for(int i = 0; i < 10000; i++) inputRandom(1,1);
 
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
