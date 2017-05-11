@@ -15,7 +15,6 @@ bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum){
         if ((arg & summand[i]) == summand[i]) result ^= 1;
 
     return result;
-
 }
 
 void inputConsole (){
@@ -58,34 +57,38 @@ void inputConsole (){
     cout << "Answer: " << x << endl;
 }
 
-void inputRandom (int lenArg, int lenSum){
-
-    //Fill an array of arguments with their values
-    unsigned int arg = rand();
+unsigned int * inputRandom (int lenArg, int lenSum){
 
     //Fill an array of summand
-    unsigned int *sum = new unsigned int[lenSum];
-    for (int i = 0; i < lenSum; i++) sum[i] = 0;
+    unsigned int *sum = new unsigned int [lenSum];
 
     for (int i = 0; i < lenSum; i++){
         sum[i] = rand() << (sizeof(unsigned int)*8 - lenArg);
         sum[i] >>= (sizeof(unsigned int)*8 - lenArg);
     }
 
-    bool x = polynomZhegalkina(arg, sum, lenSum);
+    return sum;
 }
 
 int main()
 {
     cout << "Hello World!" << endl;
 
-    srand(time(0));
+    int lenSum = 3;
+    int lenArg = 3;
+    unsigned int * sum;
 
+    sum = inputRandom(lenArg, lenSum);
+
+    srand(time(0));
     clock_t start;
     double duration;
     start = std::clock();
 
-    for(int i = 0; i < 10000; i++) inputRandom(1,1);
+    for(int i = 0; i < 10000; i++){
+        unsigned int arg = rand();
+        polynomZhegalkina(arg, sum, lenSum);
+    }
 
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
