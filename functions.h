@@ -9,6 +9,6 @@ unsigned int * inputRandom (int lenArg, int lenSum);
 
 void timeTestForPolynomZhegalkina ();
 
-unsigned int generatorA (int numberArg, int lenSum);
+unsigned int generatorA(unsigned int * setStates, int numberStates, unsigned int * sum, int lenSum, int lenRezult);
 
 #endif // FUNCTIONS_H

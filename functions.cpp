@@ -97,23 +97,13 @@ void timeTestForPolynomZhegalkina (){
 }
 
 
-unsigned int generatorA(int numberArg, int lenSum)
+unsigned int generatorA(unsigned int * setStates, int numberStates, unsigned int * sum, int lenSum, int lenRezult)
 {
     unsigned int result = 0;
 
-    int numberStates = pow(2, numberArg);
-
-    unsigned int *setStates = new unsigned int [numberStates];
-
-    for (int i = 0; i < numberStates; i++)
-        setStates[i] = i;
-
     // Generator A
 
-    unsigned int * sum;
-    sum = inputRandom(numberArg, lenSum);
-
-    for (int i = 0; i < numberStates; i++){
+    for (int i = 0; i < lenRezult; i++){
 
         bool x = polynomZhegalkina(setStates[i], sum, lenSum);
 
