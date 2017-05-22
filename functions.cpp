@@ -98,10 +98,10 @@ void timeTestForPolynomZhegalkina (){
 
 
 unsigned int generator(int lenRezult,
-                       int lenF1, unsigned int * F1, unsigned int * setStates1,
-                       int lenF2, unsigned int * F2, unsigned int * setStates2)
+                       int lenF1, unsigned int * F1, unsigned int * setStates1, unsigned int nextState1,
+                       int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int nextState2)
 {
-    unsigned int result = 0, nextState1 = 0, nextState2 = 0;
+    unsigned int result = 0;
 
     for (int i = 0; i < lenRezult; i++){
 
@@ -109,14 +109,18 @@ unsigned int generator(int lenRezult,
 
         nextState2 <<= 1;
 
-        nextState2 |= polynomZhegalkina(nextState1, F1, lenF1);
+        bool x = polynomZhegalkina(nextState1, F1, lenF1);
+
+        nextState2 |= x;
 
         nextState2 = setStates2[nextState2];
 
-        result |= polynomZhegalkina(nextState2, F2, lenF2);
-
         result <<= 1;
+
+        x = polynomZhegalkina(nextState2, F2, lenF2);
+
+        result |= x;
     }
 
-    return result >>= 1;
+    return result;
 }
