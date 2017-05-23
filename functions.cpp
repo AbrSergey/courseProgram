@@ -58,7 +58,7 @@ void inputConsole (){
     cout << "Answer: " << x << endl;
 }
 
-unsigned int * inputRandom (int lenArg, int lenSum){
+unsigned int * inputRandom (int lenArg, int lenSum){    // lenArg  unsigned int или int ???
 
     //Fill an array of summand
     unsigned int *sum = new unsigned int [lenSum];
@@ -109,17 +109,13 @@ unsigned int generator(int lenRezult,
 
         nextState2 <<= 1;
 
-        bool x = polynomZhegalkina(nextState1, F1, lenF1);
-
-        nextState2 |= x;
+        nextState2 |= polynomZhegalkina(nextState1, F1, lenF1);
 
         nextState2 = setStates2[nextState2];
 
         result <<= 1;
 
-        x = polynomZhegalkina(nextState2, F2, lenF2);
-
-        result |= x;
+        result |= polynomZhegalkina(nextState2, F2, lenF2);
     }
 
     return result;

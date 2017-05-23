@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctime>
 #include <cstdlib>
+#include <math.h>
 #include "functions.h"
 
 using namespace std;
@@ -12,13 +13,13 @@ unsigned int generator(int lenRezult,
 
 int main()
 {
-    int lenArg1 = 2;    // количество аргументов в функции f - полином Жегалкина
-    int lenArg2 = 3;    // lenArg2 > lenArg1
+    int lenArg1 = 25;    // количество аргументов в функции f - полином Жегалкина
+    int lenArg2 = 32;    //  или unsigned int ???
 
     // Задание входных данных для 1 части генератора
-    int lenRezult = 10; // длина в битах случайного числа
+    int lenRezult = 1000; // длина в битах случайного числа
 
-    int lenF1 = 2; // количество сумм в функции f - полином Жегалкина  2**lenArg-1
+    int lenF1 = pow(2, lenArg1/2) - 1; // количество сумм в функции f - полином Жегалкина  2**lenArg-1
 
     int numberStates1 = 1 << lenArg1;  // количество состояний
     unsigned int * setStates1 = new unsigned int [numberStates1];
@@ -29,7 +30,7 @@ int main()
 
     // Задание входных данных для 2 части генератора
 
-    int lenF2 = 2;
+    int lenF2 = pow(2, lenArg2/2) - 1;
     int numberStates2 = 1 << lenArg2;
 
     unsigned int * setStates2 = new unsigned int [numberStates2];
