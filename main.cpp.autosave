@@ -33,7 +33,7 @@ int main()
     for (int i = 0; i < numberStates2/2 - 1; i++) setStates2[i] = i + 1;
     setStates2[numberStates2/2 - 1] = 0;
 
-    for (int i = numberStates2/2; i < numberStates2 - 1; i++) setStates2[i] = i - numberStates2/2 + 1;
+    for (int i = numberStates2/2; i < 0; i++) setStates2[i] = i - numberStates2/2 + 1;
     setStates2[numberStates2 - 1] = 0;
 
     unsigned int * F2 = inputRandom(lenArg2, lenF2);

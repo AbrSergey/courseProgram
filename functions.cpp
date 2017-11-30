@@ -8,8 +8,6 @@ using namespace std;
 
 bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum){
 
-    //Computation of the polynomial
-
     bool result = 0;
 
     for (int i = 0; i < lenSum; i++)
@@ -98,24 +96,24 @@ void timeTestForPolynomZhegalkina (){
 
 
 unsigned int generator(int lenRezult,
-                       int lenF1, unsigned int * F1, unsigned int * setStates1, unsigned int nextState1,
-                       int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int nextState2)
+                       int lenF1, unsigned int * F1, unsigned int * setStates1, unsigned int cond1,
+                       int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int cond2)
 {
     unsigned int result = 0;
 
     for (int i = 0; i < lenRezult; i++){
 
-        nextState1 = setStates1[nextState1];
+        cond1 = setStates1[cond1];
 
-        nextState2 <<= 1;
+        cond2 <<= 1;
 
-        nextState2 |= polynomZhegalkina(nextState1, F1, lenF1);
+        cond2 |= polynomZhegalkina(cond1, F1, lenF1);
 
-        nextState2 = setStates2[nextState2];
+        cond2 = setStates2[cond2];
 
         result <<= 1;
 
-        result |= polynomZhegalkina(nextState2, F2, lenF2);
+        result |= polynomZhegalkina(cond2, F2, lenF2);
     }
 
     return result;
