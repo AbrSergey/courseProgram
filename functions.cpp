@@ -3,7 +3,9 @@
 #include <string.h>
 #include <ctime>
 #include <cstdlib>
+#include <assert.h>
 #include "cmath"
+#include <map>
 using namespace std;
 
 bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum){
@@ -117,4 +119,55 @@ unsigned int generator(int lenRezult,
     }
 
     return result;
+}
+
+
+void attack(int l, int lenF1, unsigned int *F1, unsigned int *setStates1)
+{
+    // initialization
+
+    int collision = 10;
+    int r = 0;
+
+    int tmp = pow(2,l);
+    int ** H = new int *[tmp];
+    for (int i = 0; i < tmp; i++)
+        H[i] = new int [collision];
+
+    // computation
+
+    for (int cond_init = 0; cond_init <= lenF1; cond_init++){
+        int cond = cond_init;
+        for (int i = 0; i < l; i++){
+            r |= polynomZhegalkina(cond, F1, lenF1);
+            cond = setStates1[cond];
+            if (i < l - 1) r <<= 1;
+        }
+
+        int j;
+        for (j = 0; H[r][j] != 0; j++)
+            assert(j < collision);
+
+        H[r][j] = cond_init;
+        r = 0;
+    }
+
+    // print to screen
+
+    cout << "lenF1 = " << lenF1 << endl;
+
+    for (int i = 0; i < tmp; i++){
+        if (H[i][0] != 0){
+            cout << "H[" << i << "] = "; //<< H[i] << endl;
+
+            int j = 0;
+            while(H[i][j] != 0){
+                cout << H[i][j] << "  ";
+                j++;
+            }
+            cout << endl;
+        }
+    }
+
+    return;
 }

@@ -10,7 +10,7 @@ using namespace std;
 int main()
 {
     int lenArg1 = 4;    // количество аргументов в функции f - полином Жегалкина
-    int lenArg2 = 4;    //  или unsigned int ???
+    int lenArg2 = 4;    // или unsigned int ???
 
     // Задание входных данных для 1 части генератора
     int lenRezult = 5; // длина в битах случайного числа
@@ -25,7 +25,6 @@ int main()
     unsigned int * F1 = inputRandom(lenArg1, lenF1);   // генерация функции f - полинома Жегалкина
 
     // Задание входных данных для 2 части генератора
-
     int lenF2 = pow(2, lenArg2) - 1;
     int numberStates2 = 1 << lenArg2;
 
@@ -36,24 +35,28 @@ int main()
     for (int i = numberStates2/2; i < numberStates2 - 1; i++) setStates2[i] = i - numberStates2/2 + 1;
     setStates2[numberStates2 - 1] = 0;
 
-    unsigned int * F2 = inputRandom(lenArg2, lenF2);
+//    unsigned int * F2 = inputRandom(lenArg2, lenF2);
 
     // Вызов генератора
-    unsigned int nextState1 = 0;
-    unsigned int nextState2 = 0;
+//    unsigned int nextState1 = 0; // key 1
+//    unsigned int nextState2 = 0; // key 2
 
-    srand(time(0));
-    clock_t start;
-    double duration;
-    start = std::clock();
+//    srand(time(0));
+//    clock_t start;
+//    double duration;
+//    start = std::clock();
 
-    unsigned int r = generator(lenRezult,
-                               lenF1, F1, setStates1, nextState1,
-                               lenF2, F2, setStates2, nextState2);
+//    unsigned int r = generator(lenRezult,
+//                               lenF1, F1, setStates1, nextState1,
+//                               lenF2, F2, setStates2, nextState2);
 
-    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+//    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-    cout << "time = " << duration << endl;
+//    cout << "time = " << duration << endl;
 
-    cout << "generator = " << r << endl;
+//    cout << "generator = " << r << endl;
+
+    // HACK
+    
+    attack(lenRezult, lenF1, F1, setStates1);
 }
