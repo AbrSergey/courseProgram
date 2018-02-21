@@ -11,12 +11,13 @@ struct element
 class List
 {
 private:
-    element *Head;
+    element *head;
 public:
-    List() {Head=NULL;}
+    List() {head=NULL;}
     ~List();
     void Add(int x);
     void Show();
+    bool HeadIsNull();
 };
 
 #endif // LIST_H

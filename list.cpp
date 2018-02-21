@@ -15,16 +15,22 @@ void List::Add(int x)
 {
     element *temp=new element;
     temp->x=x;
-    temp->Next=Head;
-    Head=temp;
+    temp->Next=head;
+    head=temp;
 }
 
 void List::Show()
 {
-    element *temp=Head;
+    element *temp=head;
 
     while (temp!=NULL){
         std::cout<<temp->x<<" ";
         temp=temp->Next;
     }
+}
+
+bool List::HeadIsNull()
+{
+    if (head != NULL) return false;
+    return true;
 }

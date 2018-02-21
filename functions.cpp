@@ -125,10 +125,11 @@ unsigned int generator(int lenRezult,
 
 void attack(int l, int lenF1, unsigned int *F1, unsigned int *setStates1)
 {
-    // tmp
     int r = 0;
-    map <int,List> mapHash;
-    map <int,List>::iterator itHash;
+    int tmp = 2 << (l - 1);
+    List *H = new List [tmp];
+
+    // computation
 
     for (int condInit = 0; condInit <= lenF1; condInit++){
         int cond = condInit;
@@ -138,27 +139,31 @@ void attack(int l, int lenF1, unsigned int *F1, unsigned int *setStates1)
             if (i < l - 1) r <<= 1;
         }
 
-        itHash = mapHash.find(r);
-        if (itHash != mapHash.end()){
-            List listHash = itHash->second;
-            listHash.Add(condInit);
+        List l;
+
+        if ( H[r].HeadIsNull() == true){
+            l.Add(condInit);
+            H[r] = l;
         }
         else{
-            List listH;
-            listH.Add(condInit);
-            mapHash.insert(pair<int,List>(r, listH));
+            l = H[r];
+            l.Add(condInit);
+            H[r] = l;
         }
         r = 0;
     }
 
-    for (itHash = mapHash.begin(); itHash != mapHash.end(); itHash++){
-        cout << "Key: " << itHash->first << "  Values: ";
-        List l = itHash->second;
-        l.Show();
-        cout << endl;
+    // print to screen
+
+    cout << "lenF1 = " << lenF1 << endl;
+
+    for (int i = 0; i < tmp; i++){
+            cout << "H[" << i << "] = ";
+            List lp = H[i];
+            lp.Show();
+            cout << endl;
     }
-    
-    return;
+
 }
 
 void attack_array(int l, int lenF1, unsigned int *F1, unsigned int *setStates1)
@@ -169,6 +174,7 @@ void attack_array(int l, int lenF1, unsigned int *F1, unsigned int *setStates1)
         int r = 0;
 
         int tmp = pow(2,l);
+
         int ** H = new int *[tmp];
         for (int i = 0; i < tmp; i++)
             H[i] = new int [collision];

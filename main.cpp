@@ -15,7 +15,7 @@ int main()
     // Задание входных данных для 1 части генератора
     int lenRezult = 2; // длина в битах случайного числа
 
-    int lenF1 = pow(2, lenArg1) - 1; // количество сумм в функции f - полином Жегалкина  2**lenArg-1
+    int lenF1 = pow(2, lenArg1) - 1;  //исправить количество сумм в функции f - полином Жегалкина  2**lenArg-1
 
     int numberStates1 = 1 << lenArg1;  // количество состояний
     unsigned int * setStates1 = new unsigned int [numberStates1];
@@ -25,7 +25,7 @@ int main()
     unsigned int * F1 = inputRandom(lenArg1, lenF1);   // генерация функции f - полинома Жегалкина
 
     // Задание входных данных для 2 части генератора
-    int lenF2 = pow(2, lenArg2) - 1;
+    int lenF2 = pow(2, lenArg2) - 1; //испроавить
     int numberStates2 = 1 << lenArg2;
 
     unsigned int * setStates2 = new unsigned int [numberStates2];
@@ -58,7 +58,7 @@ int main()
 
     // HACK
 
-    attack_array(lenRezult, lenF1, F1, setStates1);
+//    attack_array(lenRezult, lenF1, F1, setStates1);
     
     attack(lenRezult, lenF1, F1, setStates1);
 }
