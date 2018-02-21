@@ -1,5 +1,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
+#include <iostream>
+#include "list.h"
 
 bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum);
 
@@ -15,6 +17,6 @@ unsigned int generator(int lenRezult,
 
 void attack(int l, int lenF1, unsigned int *F1, unsigned int *setStates1);
 
-
+void attack_array(int l, int lenF1, unsigned int *F1, unsigned int *setStates1);
 
 #endif // FUNCTIONS_H

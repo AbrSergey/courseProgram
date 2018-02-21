@@ -13,7 +13,7 @@ int main()
     int lenArg2 = 4;    // или unsigned int ???
 
     // Задание входных данных для 1 части генератора
-    int lenRezult = 5; // длина в битах случайного числа
+    int lenRezult = 2; // длина в битах случайного числа
 
     int lenF1 = pow(2, lenArg1) - 1; // количество сумм в функции f - полином Жегалкина  2**lenArg-1
 
@@ -57,6 +57,8 @@ int main()
 //    cout << "generator = " << r << endl;
 
     // HACK
+
+    attack_array(lenRezult, lenF1, F1, setStates1);
     
     attack(lenRezult, lenF1, F1, setStates1);
 }
