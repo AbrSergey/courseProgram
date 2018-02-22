@@ -107,15 +107,10 @@ unsigned int generator(int lenRezult,
     for (int i = 0; i < lenRezult; i++){
 
         cond1 = setStates1[cond1];
-
         cond2 <<= 1;
-
         cond2 |= polynomZhegalkina(cond1, F1, lenF1);
-
         cond2 = setStates2[cond2];
-
         result <<= 1;
-
         result |= polynomZhegalkina(cond2, F2, lenF2);
     }
 
@@ -123,94 +118,46 @@ unsigned int generator(int lenRezult,
 }
 
 
-void attack(int l, int lenF1, unsigned int *F1, unsigned int *setStates1)
+void constructTableForAttack(int lenResult, int lenF1, unsigned int *F1, unsigned int *setStates1)
 {
-    int r = 0;
-    int tmp = 2 << (l - 1);
-    List *H = new List [tmp];
+    // initialization
+
+    int  sizeHashTable = 2 << (lenResult - 1);
+    List *HashTable = new List [sizeHashTable];
 
     // computation
 
-    for (int condInit = 0; condInit <= lenF1; condInit++){
-        int cond = condInit;
-        for (int i = 0; i < l; i++){
-            r |= polynomZhegalkina(cond, F1, lenF1);
-            cond = setStates1[cond];
-            if (i < l - 1) r <<= 1;
+    for (int condInit = 0, u = 0; condInit <= lenF1; condInit++, u = 0){
+        int condTmp = condInit;
+
+        for (int i = 0; i < lenResult; i++){
+            u |= polynomZhegalkina(condTmp, F1, lenF1);
+            condTmp = setStates1[condTmp];
+            if (i < lenResult - 1) u <<= 1;
         }
 
-        List l;
-
-        if ( H[r].HeadIsNull() == true){
-            l.Add(condInit);
-            H[r] = l;
+        if (HashTable[u].HeadIsNull() == true){
+            List tmpList;
+            tmpList.Add(condInit);
+            HashTable[u] = tmpList;
         }
         else{
-            l = H[r];
-            l.Add(condInit);
-            H[r] = l;
+            List tmpList;
+            tmpList = HashTable[u];
+            tmpList.Add(condInit);
+            HashTable[u] = tmpList;
         }
-        r = 0;
     }
 
-    // print to screen
+    // printing
 
     cout << "lenF1 = " << lenF1 << endl;
 
-    for (int i = 0; i < tmp; i++){
+    for (int i = 0; i <  sizeHashTable; i++){
             cout << "H[" << i << "] = ";
-            List lp = H[i];
-            lp.Show();
+            List tmpList = HashTable[i];
+            tmpList.Show();
             cout << endl;
     }
 
-}
-
-void attack_array(int l, int lenF1, unsigned int *F1, unsigned int *setStates1)
-{
-        // initialization
-
-        int collision = 10;
-        int r = 0;
-
-        int tmp = pow(2,l);
-
-        int ** H = new int *[tmp];
-        for (int i = 0; i < tmp; i++)
-            H[i] = new int [collision];
-
-        // computation
-
-        for (int condInit = 0; condInit <= lenF1; condInit++){
-            int cond = condInit;
-            for (int i = 0; i < l; i++){
-                r |= polynomZhegalkina(cond, F1, lenF1);
-                cond = setStates1[cond];
-                if (i < l - 1) r <<= 1;
-            }
-
-            int j;
-            for (j = 0; H[r][j] != 0; j++)
-                assert(j < collision);
-
-            H[r][j] = condInit;
-            r = 0;
-        }
-
-        // print to screen
-
-        cout << "lenF1 = " << lenF1 << endl;
-
-        for (int i = 0; i < tmp; i++){
-            if (H[i][0] != 0){
-                cout << "H[" << i << "] = "; //<< H[i] << endl;
-
-                int j = 0;
-                while(H[i][j] != 0){
-                    cout << H[i][j] << "  ";
-                    j++;
-                }
-                cout << endl;
-            }
-        }
 }

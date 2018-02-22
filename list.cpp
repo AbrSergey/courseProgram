@@ -3,34 +3,33 @@
 
 List::~List()
 {
-//    while (Head!=NULL)
-//    {
-//        element *temp=Head->Next;
-//        delete Head;
-//        Head=temp;
+//    while (m_head){
+//        Node *temp = m_head->m_next;
+//        delete m_head;
+//        m_head = temp;
 //    }
 }
 
 void List::Add(int x)
 {
-    element *temp=new element;
-    temp->x=x;
-    temp->Next=head;
-    head=temp;
+    Node *temp = new Node;
+    temp->x = x;
+    temp->m_next = m_head;
+    m_head = temp;
 }
 
 void List::Show()
 {
-    element *temp=head;
+    Node *temp = m_head;
 
-    while (temp!=NULL){
-        std::cout<<temp->x<<" ";
-        temp=temp->Next;
+    while (temp != NULL){
+        std::cout << temp->x << " ";
+        temp = m_head->m_next;
     }
 }
 
 bool List::HeadIsNull()
 {
-    if (head != NULL) return false;
+    if (m_head != NULL) return false;
     return true;
 }

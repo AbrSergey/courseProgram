@@ -2,18 +2,18 @@
 #define LIST_H
 #include <iostream>
 
-struct element
+struct Node
 {
     int x;
-    element *Next;
+    Node *m_next;
 };
 
 class List
 {
 private:
-    element *head;
+    Node *m_head;
 public:
-    List() {head=NULL;}
+    List() {m_head=NULL;}
     ~List();
     void Add(int x);
     void Show();

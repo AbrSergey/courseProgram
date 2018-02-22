@@ -58,7 +58,5 @@ int main()
 
     // HACK
 
-//    attack_array(lenRezult, lenF1, F1, setStates1);
-    
-    attack(lenRezult, lenF1, F1, setStates1);
+    constructTableForAttack(lenRezult, lenF1, F1, setStates1);
 }
