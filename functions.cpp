@@ -6,8 +6,7 @@
 #include <assert.h>
 #include "cmath"
 #include <map>
-
-using namespace std;
+#include <list>
 
 bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum){
 
@@ -26,28 +25,28 @@ void inputConsole (){
     int lenArg, lenSum;
     unsigned int arg = 0;
 
-    cout << "Enter the number of arguments" << endl;
-    cin >> lenArg;
+    std::cout << "Enter the number of arguments" << std::endl;
+    std::cin >> lenArg;
 
     for (int i = 0; i < lenArg; i++){
-        cout << "Value of " << i << " argument" << endl;
-        cin >> x;
+        std::cout << "Value of " << i << " argument" << std::endl;
+        std::cin >> x;
         arg |= x;
         arg <<= 1;
     }
     arg >>= 1; //???
 
     //Fill an array of summand
-    cout << "Enter the number of summands" << endl;
-    cin >> lenSum;
+    std::cout << "Enter the number of summands" << std::endl;
+    std::cin >> lenSum;
 
     unsigned int *sum = new unsigned int[lenSum];
     for (int i = 0; i < lenSum; i++) sum[i] = 0;
 
     for (int i = 0; i < lenSum; i++){
         for (int j = 0; j < lenArg; j++){
-            cout << j << " argument in " << i << " summand" << endl;
-            cin >> x;
+            std::cout << j << " argument in " << i << " summand" << std::endl;
+            std::cin >> x;
             sum[i] |= x;
             sum[i] <<= 1;
         }
@@ -56,7 +55,7 @@ void inputConsole (){
 
     x = polynomZhegalkina(arg, sum, lenSum);
 
-    cout << "Answer: " << x << endl;
+    std::cout << "Answer: " << x << std::endl;
 }
 
 unsigned int * inputRandom (int lenArg, int lenSum){    // lenArg  unsigned int или int ???
@@ -74,7 +73,7 @@ unsigned int * inputRandom (int lenArg, int lenSum){    // lenArg  unsigned int 
 
 void timeTestForPolynomZhegalkina (){
 
-    cout << "Hello World!" << endl;
+    std::cout << "Hello World!" << std::endl;
 
     int lenSum = 3;
     int lenArg = 3;
@@ -94,7 +93,7 @@ void timeTestForPolynomZhegalkina (){
 
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-    cout << "polynomZhegalkina = " << duration << endl;
+    std::cout << "polynomZhegalkina = " << duration << std::endl;
 }
 
 
@@ -118,46 +117,60 @@ unsigned int generator(int lenRezult,
 }
 
 
-void constructTableForAttack(int lenResult, int lenF1, unsigned int *F1, unsigned int *setStates1)
+void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1)
 {
+    // input validation
+
+    assert (lenResult <= 31);
+    assert (lenArg1 <= 31);
+    assert (lenF1 <= 31);
+
     // initialization
 
-    int  sizeHashTable = 2 << (lenResult - 1);
-    List *HashTable = new List [sizeHashTable];
+    unsigned int numberCond = 1 << lenArg1;
+    unsigned int  sizeHashTable = 1 << lenResult;
+    std::list<unsigned int> *HashTable = new std::list<unsigned int> [sizeHashTable];
 
     // computation
 
-    for (int condInit = 0, u = 0; condInit <= lenF1; condInit++, u = 0){
+    for (unsigned int condInit = 0, resPolZheg = 0; condInit <= numberCond; condInit++, resPolZheg = 0){
         int condTmp = condInit;
 
+        // get result from generator A1
         for (int i = 0; i < lenResult; i++){
-            u |= polynomZhegalkina(condTmp, F1, lenF1);
+            resPolZheg |= polynomZhegalkina(condTmp, F1, lenF1);
             condTmp = setStates1[condTmp];
-            if (i < lenResult - 1) u <<= 1;
+            if (i < lenResult - 1) resPolZheg <<= 1;
         }
 
-        if (HashTable[u].HeadIsNull() == true){
-            List tmpList;
-            tmpList.Add(condInit);
-            HashTable[u] = tmpList;
+        // create list and add element
+        if (HashTable[resPolZheg].empty() == true){
+            std::list<unsigned int> tmpList;
+            tmpList.push_back(condInit);
+            HashTable[resPolZheg] = tmpList;
         }
+        // add element to the end of list
         else{
-            List tmpList;
-            tmpList = HashTable[u];
-            tmpList.Add(condInit);
-            HashTable[u] = tmpList;
+            std::list<unsigned int> tmpList;
+            tmpList = HashTable[resPolZheg];
+            tmpList.push_back(condInit);
+            HashTable[resPolZheg] = tmpList;
         }
     }
 
     // printing
 
-    cout << "lenF1 = " << lenF1 << endl;
+    std::cout << "lenResult = " << lenResult << std::endl;
 
-    for (int i = 0; i <  sizeHashTable; i++){
-            cout << "H[" << i << "] = ";
-            List tmpList = HashTable[i];
-            tmpList.Show();
-            cout << endl;
+    for (unsigned int i = 0; i <  sizeHashTable; i++){
+            std::cout << "H[" << i << "] = ";
+            std::list<unsigned int> tmpList = HashTable[i];
+
+            // displaying the result from the list
+            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+                std::cout << *it << " ";
+
+            std::cout << std::endl;
     }
 
 }
