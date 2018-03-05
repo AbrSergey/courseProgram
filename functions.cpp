@@ -1,4 +1,5 @@
 #include "functions.h"
+#include "tree.h"
 #include <iostream>
 #include <string.h>
 #include <ctime>
@@ -172,5 +173,52 @@ void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int
 
             std::cout << std::endl;
     }
+
+}
+
+void DSS(TreeNode * tree, int lenResult, unsigned int result, unsigned int cond2, int lenF2, unsigned int *F2, unsigned int *setStates2)
+{
+
+    if (lenResult == 0) return;
+
+    bool bitRes;
+
+    if ((result & 1) == 1) bitRes = 1;
+    else bitRes = 0;
+
+    cond2 <<= 1;
+
+//    bool flag = false;
+
+    cond2 |= 0;
+    bool resF2 = polynomZhegalkina(cond2, F2, lenF2);
+    if (resF2 == bitRes){
+        // add left branch
+        //_data = setStates(cond2)
+        unsigned int cond = setStates2[cond2];
+        tree.insert(cond, 0);
+//        flag = true;
+
+
+        DSS(tree.left(), lenResult-1, result>>1, cond, lenF2, F2, setStates2);
+    }
+
+    cond2 |= 1;
+    resF2 = polynomZhegalkina(cond2, F2, lenF2);
+    if (resF2 == bitRes){
+        // add right branch
+        // _data = setStates(cond2)
+        unsigned int cond = setStates2[cond2];
+        tree.insert(cond, 1);
+//        flag = true;
+
+        DSS(Tree->right, lenResult-1, result>>1, cond, lenF2, F2, setStates2);
+    }
+
+//    if (!flag){
+//        // delete branch
+//    }
+
+
 
 }

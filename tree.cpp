@@ -1,17 +1,17 @@
 #include <iostream>
+#include <assert.h>
 #include "tree.h"
 
-template< typename T >
-Tree< T >::Tree(): _root(0) {}
+int max(const int &left, const int &right);
 
-template< typename T >
-Tree< T >::~Tree()
+Tree::Tree(): _root(0) {}
+
+Tree::~Tree()
 {
     delete_helper(_root);
 }
 
-template< typename T >
-void Tree< T >::delete_helper(TreeNode< T > *node)
+void Tree::delete_helper(TreeNode *node)
 {
     if (node != 0)
     {
@@ -22,41 +22,58 @@ void Tree< T >::delete_helper(TreeNode< T > *node)
     }
 }
 
-template< typename T >
-void Tree< T >::insert(const T &data)
+void Tree::insert(unsigned int data, int status = 2) // 0 - left, 1 - right, 2 - root
 {
-    insert_helper(&_root, data);
+    assert(status == 0 | status == 1 | status == 2);
+
+    insert_helper(&_root, data, status);
 }
 
-template< typename T >
-void Tree< T >::insert_helper(TreeNode< T > **node, const T &data)
+void Tree::insert_helper(TreeNode **node, unsigned int data, int status)
 {
-    if (*node == 0)
-        *node = new TreeNode< T > (data);
-    else
-    {
-        if ((*node)->_data > data)
-            insert_helper(&((*node)->_left), data);
-        else
-        {
-            if ((*node)->_data < data)
-                insert_helper(&((*node)->_right), data);
-        }
-    }
+    if (status == 2)
+        *node = new TreeNode (data);
+    else if (status == 0)
+        insert_helper(&((*node)->_left), data, 2);
+    else if (status == 1)
+        insert_helper(&((*node)->_right), data, 2);
+
+//    if (*node == 0)
+//        *node = new TreeNode (data);
+//    else
+//    {
+//        if ((*node)->_data > data)
+//            insert_helper(&((*node)->_left), data);
+//        else
+//        {
+//            if ((*node)->_data < data)
+//                insert_helper(&((*node)->_right), data);
+//        }
+//    }
 }
 
-template< typename T >
-void Tree< T >::remove(const T &data)
+void Tree::remove(const unsigned int &data)
 {
     remove_helper(&_root, data);
 }
 
-template< typename T >
-void Tree< T >::remove_helper(TreeNode< T > **node, const T &data)
+TreeNode *Tree::root()
+{
+    assert(_root == NULL);
+    return _root;
+}
+
+TreeNode *Tree::left()
+{
+    assert(_root->_left == NULL);
+    return _root->_left;
+}
+
+void Tree::remove_helper(TreeNode **node, const unsigned int &data)
 {
     if ((*node)->_data == data)
     {
-        TreeNode< T > *del_node = *node;
+        TreeNode *del_node = *node;
 
         if ((*node)->_left == 0 && (*node)->_right == 0)
         {
@@ -82,8 +99,8 @@ void Tree< T >::remove_helper(TreeNode< T > **node, const T &data)
                 }
                 else
                 {
-                    TreeNode< T > *p = *node;
-                    TreeNode< T > *i = (*node)->_left;
+                    TreeNode *p = *node;
+                    TreeNode *i = (*node)->_left;
 
                     while (i->_right != 0)
                     {
@@ -113,14 +130,12 @@ void Tree< T >::remove_helper(TreeNode< T > **node, const T &data)
     }
 }
 
-template< typename T >
-void Tree< T >::pre_order() const
+void Tree::pre_order() const
 {
     pre_order_helper(_root);
 }
 
-template< typename T >
-void Tree< T >::pre_order_helper(TreeNode< T > *node) const
+void Tree::pre_order_helper(TreeNode *node) const
 {
     if (node != 0)
     {
@@ -131,14 +146,12 @@ void Tree< T >::pre_order_helper(TreeNode< T > *node) const
     }
 }
 
-template< typename T >
-void Tree< T >::in_order() const
+void Tree::in_order() const
 {
     in_order_helper(_root);
 }
 
-template< typename T >
-void Tree< T >::in_order_helper(TreeNode< T > *node) const
+void Tree::in_order_helper(TreeNode *node) const
 {
     if (node != 0)
     {
@@ -150,14 +163,12 @@ void Tree< T >::in_order_helper(TreeNode< T > *node) const
     }
 }
 
-template< typename T >
-void Tree< T >::post_order() const
+void Tree::post_order() const
 {
     post_order_helper(_root);
 }
 
-template< typename T >
-void Tree< T >::post_order_helper(TreeNode< T > *node) const
+void Tree::post_order_helper(TreeNode *node) const
 {
     if (node != 0)
     {
@@ -168,14 +179,12 @@ void Tree< T >::post_order_helper(TreeNode< T > *node) const
     }
 }
 
-template< typename T >
-int Tree< T >::depth() const
+int Tree::depth() const
 {
     return depth_helper(_root);
 }
 
-template< typename T >
-int Tree< T >::depth_helper(TreeNode< T > *node) const
+int Tree::depth_helper(TreeNode *node) const
 {
     if (node->_left == 0 && node->_right == 0)
         return 1;
@@ -193,14 +202,12 @@ int Tree< T >::depth_helper(TreeNode< T > *node) const
     }
 }
 
-template< typename T >
-void Tree< T >::print() const
+void Tree::print() const
 {
     print_helper(_root, 0);
 }
 
-template< typename T >
-void Tree< T >::print_helper(TreeNode< T > *node, int spaces) const
+void Tree::print_helper(TreeNode *node, int spaces) const
 {
     while (node != 0)
     {
@@ -216,8 +223,7 @@ void Tree< T >::print_helper(TreeNode< T > *node, int spaces) const
     }
 }
 
-template< typename Type >
-Type max(const Type &left, const Type &right)
+int max(const int &left, const int &right)
 {
     return left > right ? left : right;
 }

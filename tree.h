@@ -1,9 +1,8 @@
 #ifndef TREE_H
 #define TREE_H
-
+#include <iostream>
 #include "treenode.h"
 
-template< typename T >
 class Tree
 {
 //    template< typename Type >
@@ -13,8 +12,11 @@ public:
     Tree();
     ~Tree();
 
-    void insert(const T &);
-    void remove(const T &);
+    void insert(unsigned int, int status);
+    void remove(const unsigned int &);
+
+    TreeNode * root();
+    TreeNode * left();
 
     void pre_order() const;
     void in_order() const;
@@ -25,19 +27,19 @@ public:
     void print() const;
 
 private:
-    TreeNode< T > *_root;
+    TreeNode *_root = NULL;
 
-    void insert_helper(TreeNode< T > **, const T &);
-    void remove_helper(TreeNode< T > **, const T &);
+    void insert_helper(TreeNode **, unsigned int , int status);
+    void remove_helper(TreeNode **, const unsigned int &);
 
-    void pre_order_helper(TreeNode< T > *) const;
-    void in_order_helper(TreeNode< T > *) const;
-    void post_order_helper(TreeNode< T > *) const;
+    void pre_order_helper(TreeNode *) const;
+    void in_order_helper(TreeNode *) const;
+    void post_order_helper(TreeNode *) const;
 
-    void delete_helper(TreeNode< T > *);
+    void delete_helper(TreeNode *);
 
-    int depth_helper(TreeNode< T > *) const;
+    int depth_helper(TreeNode *) const;
 
-    void print_helper(TreeNode< T >*, int) const;
+    void print_helper(TreeNode*, int) const;
 };
 #endif // TREE_H

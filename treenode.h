@@ -1,24 +1,20 @@
 #ifndef TREENODE_H
 #define TREENODE_H
 
-
-template< typename T > class Tree;
-
-template< typename T >
 class TreeNode
 {
-    friend class Tree< T >;
+    friend class Tree;
 
 public:
     TreeNode();
-    TreeNode(const T &);
+    TreeNode(const unsigned int &);
 
-    T get_data() const;
+    unsigned int get_data() const;
 
 private:
-    T _data;
-    TreeNode< T > *_left;
-    TreeNode< T > *_right;
+    unsigned int _data;
+    TreeNode *_left;
+    TreeNode*_right;
 };
 
 #endif // TREENODE_H

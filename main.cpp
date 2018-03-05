@@ -3,6 +3,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "functions.h"
+#include"tree.h"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ int main()
     int lenArg2 = 4;    // <= 31
 
     // Задание входных данных для 1 части генератора
-    int lenRezult = 3; // длина в битах случайного числа
+    int lenResult = 3; // длина в битах случайного числа
 
     int lenF1 = (1 << lenArg1) - 1;  //количество сумм в функции f - полином Жегалкина  2**lenArg-1
 
@@ -34,7 +35,7 @@ int main()
     for (int i = numberStates2/2; i < numberStates2 - 1; i++) setStates2[i] = i - numberStates2/2 + 1;
     setStates2[numberStates2 - 1] = 0;
 
-//    unsigned int * F2 = inputRandom(lenArg2, lenF2);
+    unsigned int * F2 = inputRandom(lenArg2, lenF2);
 
     // Вызов генератора
 //    unsigned int nextState1 = 0; // key 1
@@ -57,5 +58,15 @@ int main()
 
     // HACK
 
-    constructTableForAttack(lenRezult, lenArg1, lenF1, F1, setStates1);
+//    constructTableForAttack(lenResult, lenArg1, lenF1, F1, setStates1);
+
+    int result = 6;
+    int cond2 = 0;
+
+    Tree tree;
+    tree.insert(cond2, 2);
+
+    DSS(tree.root(), lenResult, result, cond2, lenF2, F2, setStates2);
+
+    tree.print();
 }
