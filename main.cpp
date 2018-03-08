@@ -9,11 +9,11 @@ using namespace std;
 
 int main()
 {
-    int lenArg1 = 4;    // количество аргументов в функции f - полином Жегалкина. <= 31
-    int lenArg2 = 4;    // <= 31
+    int lenArg1 = 3;    // количество аргументов в функции f - полином Жегалкина. <= 31
+    int lenArg2 = 3;    // <= 31
 
     // Задание входных данных для 1 части генератора
-    int lenResult = 3; // длина в битах случайного числа
+    int lenResult = 5; // длина в битах случайного числа
 
     int lenF1 = (1 << lenArg1) - 1;  //количество сумм в функции f - полином Жегалкина  2**lenArg-1
 
@@ -60,13 +60,11 @@ int main()
 
 //    constructTableForAttack(lenResult, lenArg1, lenF1, F1, setStates1);
 
-    int result = 6;
+    int result = 15;
     int cond2 = 0;
 
-    Tree tree;
-    tree.insert(cond2, 2);
 
-    DSS(tree.root(), lenResult, result, cond2, lenF2, F2, setStates2);
 
-    tree.print();
+    DSS( lenResult, result, cond2, lenF2, F2, setStates2);
+
 }

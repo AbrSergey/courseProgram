@@ -176,49 +176,63 @@ void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int
 
 }
 
-void DSS(TreeNode * tree, int lenResult, unsigned int result, unsigned int cond2, int lenF2, unsigned int *F2, unsigned int *setStates2)
+void DSS(int lenResult, unsigned int result, unsigned int cond2, int lenF2, unsigned int * F2, unsigned int * setStates2)
 {
+    Tree tree(cond2);
+    TreeNode * root = tree.root();
 
     if (lenResult == 0) return;
 
-    bool bitRes;
+//    bool bitRes;
+//    bool flag;
+    TreeNode * node = root;
+    unsigned int res = result;
+    unsigned int state = cond2;
 
-    if ((result & 1) == 1) bitRes = 1;
+    int t = 1;
+
+    dss_helper (t, state, lenResult, res, lenF2, F2, setStates2, node);
+    tree.print();
+}
+
+void dss_helper(int t, unsigned int state, int lenRes, unsigned int res,
+                int lenF2, unsigned int * F2, unsigned int * setStates2, TreeNode * node)
+{
+    if (t > lenRes) return;
+
+    bool bitRes, flag = false;
+
+    if ((res & 1) == 1) bitRes = 1;
     else bitRes = 0;
 
-    cond2 <<= 1;
+    res >>= 1;
+    lenRes--;
 
-//    bool flag = false;
-
-    cond2 |= 0;
-    bool resF2 = polynomZhegalkina(cond2, F2, lenF2);
+    state <<= 1;
+    state |= 0;
+    bool resF2 = polynomZhegalkina(state, F2, lenF2);
     if (resF2 == bitRes){
         // add left branch
         //_data = setStates(cond2)
-        unsigned int cond = setStates2[cond2];
-        tree.insert(cond, 0);
-//        flag = true;
-
-
-        DSS(tree.left(), lenResult-1, result>>1, cond, lenF2, F2, setStates2);
+        unsigned int cond = setStates2[state];
+        node->insert(cond, false);
+        flag = true;
+        dss_helper(t, cond, lenRes, res, lenF2, F2, setStates2, node->_left);
     }
 
-    cond2 |= 1;
-    resF2 = polynomZhegalkina(cond2, F2, lenF2);
+    state |= 1;
+    resF2 = polynomZhegalkina(state, F2, lenF2);
     if (resF2 == bitRes){
         // add right branch
         // _data = setStates(cond2)
-        unsigned int cond = setStates2[cond2];
-        tree.insert(cond, 1);
-//        flag = true;
-
-        DSS(Tree->right, lenResult-1, result>>1, cond, lenF2, F2, setStates2);
+        unsigned int cond = setStates2[state];
+        node->insert(cond, true);
+        flag = true;
+        dss_helper(t, cond, lenRes, res, lenF2, F2, setStates2, node->_right);
     }
 
-//    if (!flag){
-//        // delete branch
-//    }
-
-
-
+    if (!flag){
+         std::cout << "delete" << std::endl;
+         node->delete_branch();
+    }
 }

@@ -16,7 +16,10 @@ unsigned int generator(int lenRezult,
 
 void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1);
 
-void DSS (TreeNode *tree, int lenResult, unsigned int result, unsigned int cond2,
+void DSS (int lenResult, unsigned int result, unsigned int cond2,
           int lenF2, unsigned int * F2, unsigned int * setStates2);
+
+void dss_helper(int t, unsigned int state, int lenRes, unsigned int res,
+                int lenF2, unsigned int * F2, unsigned int * setStates2, TreeNode *node);
 
 #endif // FUNCTIONS_H
