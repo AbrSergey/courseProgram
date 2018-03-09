@@ -176,36 +176,32 @@ void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int
 
 }
 
-void DSS(int lenResult, unsigned int result, unsigned int cond2, int lenF2, unsigned int * F2, unsigned int * setStates2)
+void DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, unsigned int * F2, unsigned int * setStates2)
 {
-    Tree tree(cond2);
+    assert (lenResult > 0 && lenResult <= 31);
+
+    // computation
+
+    Tree tree(initState);
     TreeNode * root = tree.root();
 
-    if (lenResult == 0) return;
+    int stage = 1;  // stage of tree
+    dssHelper (stage, initState, lenResult, result, lenF2, F2, setStates2, root); // start of recursion
 
-//    bool bitRes;
-//    bool flag;
-    TreeNode * node = root;
-    unsigned int res = result;
-    unsigned int state = cond2;
+    // for debugging
 
-    int t = 1;
-
-    dss_helper (t, state, lenResult, res, lenF2, F2, setStates2, node);
     tree.print();
-
     std::cout << std::endl << "print bits : " << std::endl;
-
-    unsigned int x = 0;
-    root->print_bits(x);
+    root->printBits();
 }
 
-void dss_helper(int t, unsigned int state, int lenRes, unsigned int res,
+void dssHelper(int stage, unsigned int state, int lenRes, unsigned int res,
                 int lenF2, unsigned int * F2, unsigned int * setStates2, TreeNode * node)
 {
-    if (t > lenRes) return;
+    if (stage > lenRes) return;
 
-    bool bitRes, flag = false;
+    bool flag = false;  // to determine that no right or left branch has been added
+    bool bitRes;    // one resukt bit of array resukt bits
 
     if ((res & 1) == 1) bitRes = 1;
     else bitRes = 0;
@@ -216,28 +212,24 @@ void dss_helper(int t, unsigned int state, int lenRes, unsigned int res,
     state <<= 1;
     state |= 0;
     bool resF2 = polynomZhegalkina(state, F2, lenF2);
-    if (resF2 == bitRes){
-        // add left branch
-        //_data = setStates(cond2)
-        unsigned int cond = setStates2[state];
-        node->insert(cond, false);
+    if (resF2 == bitRes){       // check if output of A1 generator is 0
+        unsigned int nextCond = setStates2[state];
+        node->insert(nextCond, false);      // add left branch, _data = setStates(cond2)
         flag = true;
-        dss_helper(t, cond, lenRes, res, lenF2, F2, setStates2, node->_left);
+        dssHelper(stage, nextCond, lenRes, res, lenF2, F2, setStates2, node->_left);
     }
 
     state |= 1;
     resF2 = polynomZhegalkina(state, F2, lenF2);
-    if (resF2 == bitRes){
-        // add right branch
-        // _data = setStates(cond2)
-        unsigned int cond = setStates2[state];
-        node->insert(cond, true);
+    if (resF2 == bitRes){       // check if output of A1 generator is 1
+        unsigned int nextCond = setStates2[state];
+        node->insert(nextCond, true);       // add right branch, _data = setStates(cond2)
         flag = true;
-        dss_helper(t, cond, lenRes, res, lenF2, F2, setStates2, node->_right);
+        dssHelper(stage, nextCond, lenRes, res, lenF2, F2, setStates2, node->_right);
     }
 
     if (!flag){
-         std::cout << "delete" << std::endl;
-         node->delete_branch();
+         std::cout << "delete" << std::endl; // for debugging
+         node->deleteBranch();
     }
 }

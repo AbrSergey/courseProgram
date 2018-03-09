@@ -13,7 +13,7 @@ int main()
     int lenArg2 = 3;    // <= 31
 
     // Задание входных данных для 1 части генератора
-    int lenResult = 5; // длина в битах случайного числа
+    int lenResult = 5; // длина в битах случайного числа <= 31
 
     int lenF1 = (1 << lenArg1) - 1;  //количество сумм в функции f - полином Жегалкина  2**lenArg-1
 
@@ -63,6 +63,6 @@ int main()
     int result = 15;
     int cond2 = 0;
 
-    DSS( lenResult, result, cond2, lenF2, F2, setStates2);
+    DSS( lenResult, result, cond2, lenF2, F2, setStates2); // lenResult <= 31
 
 }
