@@ -63,8 +63,6 @@ int main()
     int result = 15;
     int cond2 = 0;
 
-
-
     DSS( lenResult, result, cond2, lenF2, F2, setStates2);
 
 }

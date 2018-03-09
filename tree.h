@@ -35,11 +35,51 @@ struct TreeNode{
 
     void delete_branch ()
     {
-        if (_left == NULL || _right == NULL){
-            TreeNode * node = _parent;
-            _parent->delete_branch();
+        assert (_left == NULL || _right == NULL);
+        delete_branch_helper();
+    }
+
+    void delete_branch_helper()
+    {
+        if (_parent->_left == this)
+        {
+            _parent->_left = NULL;
+            delete this;
+            return;
+        }
+        else if (_parent->_right == this)
+        {
+            if (_parent->_left != NULL)
+            {
+                _parent->_right = NULL;
+                delete this;
+                return;
+            }
+            _parent->delete_branch_helper();
             delete this;
         }
+        assert(std::cout << "Error");
+    }
+
+    void print_bits(unsigned int x)
+    {
+         if (_left != NULL)
+         {
+             x <<= 1;
+             _left->print_bits(x);
+             x >>= 1;
+         }
+         if (_right != NULL)
+         {
+             x <<= 1;
+             x |= 1;
+             _right->print_bits(x);
+         }
+         if (_left == NULL && _right == NULL)
+         {
+             std::cout << x << std::endl;
+             return;
+         }
     }
 };
 

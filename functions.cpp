@@ -193,6 +193,11 @@ void DSS(int lenResult, unsigned int result, unsigned int cond2, int lenF2, unsi
 
     dss_helper (t, state, lenResult, res, lenF2, F2, setStates2, node);
     tree.print();
+
+    std::cout << std::endl << "print bits : " << std::endl;
+
+    unsigned int x = 0;
+    root->print_bits(x);
 }
 
 void dss_helper(int t, unsigned int state, int lenRes, unsigned int res,
