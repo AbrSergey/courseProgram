@@ -16,7 +16,7 @@ Tree::~Tree()
 
 void Tree::deleteHelper(TreeNode *node)
 {
-    if (node != 0)
+    if (node != NULL)
     {
         deleteHelper(node->_left);
         deleteHelper(node->_right);

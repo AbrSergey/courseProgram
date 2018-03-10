@@ -26,6 +26,8 @@ void TreeNode::deleteBranch()
 
 void TreeNode::deleteBranchHelper()
 {
+    if (_parent == NULL) return;
+
     if (_parent->_left == this)
     {
         _parent->_left = NULL;
@@ -41,10 +43,13 @@ void TreeNode::deleteBranchHelper()
             return;
         }
         _parent->deleteBranchHelper();
+        _parent->_right = NULL;
         delete this;
         return;
     }
-    assert(std::cout << "Error");
+//    _parent = NULL;
+//    delete this;
+//    assert(std::cout << "Error in deleteBranchHelper()");
 }
 
 void TreeNode::printBits()

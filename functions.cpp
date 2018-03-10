@@ -188,6 +188,13 @@ void DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, 
     int stage = 1;  // stage of tree
     dssHelper (stage, initState, lenResult, result, lenF2, F2, setStates2, root); // start of recursion
 
+    if (root->_left == NULL && root->_right == NULL)
+    {
+        std::cout << "State = " << initState << " is wrong" << std::endl;
+        root = NULL;
+        return;
+    }
+
     // for debugging
 
     tree.print();
@@ -199,37 +206,34 @@ void dssHelper(int stage, unsigned int state, int lenRes, unsigned int res,
                 int lenF2, unsigned int * F2, unsigned int * setStates2, TreeNode * node)
 {
     if (stage > lenRes) return;
+    stage++;
 
-    bool flag = false;  // to determine that no right or left branch has been added
-    bool bitRes;    // one resukt bit of array resukt bits
+    bool bitRes;    // one result bit of array result bits
 
     if ((res & 1) == 1) bitRes = 1;
     else bitRes = 0;
 
     res >>= 1;
-    lenRes--;
 
     state <<= 1;
     state |= 0;
     bool resF2 = polynomZhegalkina(state, F2, lenF2);
-    if (resF2 == bitRes){       // check if output of A1 generator is 0
+    if (resF2 == bitRes)    // check if output of A1 generator is 0
+    {
         unsigned int nextCond = setStates2[state];
         node->insert(nextCond, false);      // add left branch, _data = setStates(cond2)
-        flag = true;
         dssHelper(stage, nextCond, lenRes, res, lenF2, F2, setStates2, node->_left);
     }
 
     state |= 1;
     resF2 = polynomZhegalkina(state, F2, lenF2);
-    if (resF2 == bitRes){       // check if output of A1 generator is 1
+    if (resF2 == bitRes)    // check if output of A1 generator is 1
+    {
         unsigned int nextCond = setStates2[state];
         node->insert(nextCond, true);       // add right branch, _data = setStates(cond2)
-        flag = true;
         dssHelper(stage, nextCond, lenRes, res, lenF2, F2, setStates2, node->_right);
     }
 
-    if (!flag){
-         std::cout << "delete" << std::endl; // for debugging
-         node->deleteBranch();
-    }
+    if (node->_left == NULL && node->_right == NULL && (stage - 1) <= lenRes)
+        node->deleteBranch();
 }
