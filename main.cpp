@@ -3,7 +3,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "functions.h"
-#include"tree.h"
+#include "tree.h"
 
 using namespace std;
 
