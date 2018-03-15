@@ -176,7 +176,7 @@ void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int
 
 }
 
-void DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, unsigned int * F2, unsigned int * setStates2)
+int DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int *controlSequence)
 {
     assert (lenResult > 0 && lenResult <= 31);
 
@@ -192,14 +192,22 @@ void DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, 
     {
         std::cout << "State = " << initState << " is wrong" << std::endl;
         root = NULL;
-        return;
+        return 0;
     }
 
-    // for debugging
+    // returning
+
+    int countControlSequence = 0;
+
+    countControlSequence = root->printBits(controlSequence);
 
     tree.print();
-    std::cout << std::endl << "print bits : " << std::endl;
-    root->printBits();
+
+    return countControlSequence;
+
+
+//    std::cout << std::endl << "print bits : " << std::endl;
+//    root->printBits();
 }
 
 void dssHelper(int stage, unsigned int state, int lenRes, unsigned int res,

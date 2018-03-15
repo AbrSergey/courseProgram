@@ -25,9 +25,9 @@ struct TreeNode{
 
     void deleteBranchHelper();
 
-    void printBits();
+    int printBits(unsigned int *massiv);
 
-    void printBitsHelper(unsigned int controlSequence);
+    void printBitsHelper(unsigned int * massiv, int & lenMassiv, unsigned int controlSequence);
 };
 
 #endif // TREENODE

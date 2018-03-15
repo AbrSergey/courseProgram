@@ -6,6 +6,7 @@
 #include "tree.h"
 
 using namespace std;
+const int MAX_CONTROL_SEQUENCE = 10;
 
 int main()
 {
@@ -38,33 +39,41 @@ int main()
     unsigned int * F2 = inputRandom(lenArg2, lenF2);
 
     // Вызов генератора
-//    unsigned int nextState1 = 0; // key 1
-//    unsigned int nextState2 = 0; // key 2
+    unsigned int nextState1 = 0; // key 1
+    unsigned int nextState2 = 0; // key 2
 
-//    srand(time(0));
-//    clock_t start;
-//    double duration;
-//    start = std::clock();
+    srand(time(0));
+    clock_t start;
+    double duration;
+    start = std::clock();
 
-//    unsigned int r = generator(lenRezult,
-//                               lenF1, F1, setStates1, nextState1,
-//                               lenF2, F2, setStates2, nextState2);
+    unsigned int result = generator(lenResult,
+                               lenF1, F1, setStates1, nextState1,
+                               lenF2, F2, setStates2, nextState2);
 
-//    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-//    cout << "time = " << duration << endl;
+    cout << "time = " << duration << endl;
 
-//    cout << "generator = " << r << endl;
+    cout << "generator = " << result << endl;
 
     // HACK
 
 //    constructTableForAttack(lenResult, lenArg1, lenF1, F1, setStates1);
 
-    int result = 15;
+//    int result = 15;
+
+    unsigned int * massContrSeq = new unsigned int [MAX_CONTROL_SEQUENCE];
+    int countMassContrSeq = 0;
 
     for (int cond2 = 0; cond2 < numberStates2; cond2++){
         std::cout << "cond2 = " << cond2 << std::endl;
-        DSS( lenResult, result, cond2, lenF2, F2, setStates2); // lenResult <= 31
-    }
+        countMassContrSeq = DSS(lenResult, result, cond2, lenF2, F2, setStates2, massContrSeq); // lenResult <= 31
 
+        std::cout << std::endl << "IN MAIN:" << std::endl;
+
+        for (int i = 0; massContrSeq[i] != 0; i++){
+            std::cout << i << " = " << massContrSeq[i] << std::endl;
+        }
+    }
 }

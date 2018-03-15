@@ -16,8 +16,8 @@ unsigned int generator(int lenRezult,
 
 void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1);
 
-void DSS (int lenResult, unsigned int result, unsigned int initState,
-          int lenF2, unsigned int * F2, unsigned int * setStates2);
+int DSS (int lenResult, unsigned int result, unsigned int initState,
+          int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int * controlSequence);
 
 void dssHelper(int stage, unsigned int state, int lenRes, unsigned int res,
                 int lenF2, unsigned int * F2, unsigned int * setStates2, TreeNode *node);

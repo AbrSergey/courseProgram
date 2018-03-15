@@ -52,28 +52,33 @@ void TreeNode::deleteBranchHelper()
 //    assert(std::cout << "Error in deleteBranchHelper()");
 }
 
-void TreeNode::printBits()
+int TreeNode::printBits(unsigned int * massiv)
 {
-    printBitsHelper(0);
+    int lenMassiv = 0;
+
+    printBitsHelper(massiv, lenMassiv, 0);
+
+    return lenMassiv;
 }
 
-void TreeNode::printBitsHelper(unsigned int controlSequence)
+void TreeNode::printBitsHelper(unsigned int * massiv, int &lenMassiv, unsigned int controlSequence)
 {
     if (_left != NULL)
     {
         controlSequence <<= 1;
-        _left->printBitsHelper(controlSequence);
+        _left->printBitsHelper(massiv, lenMassiv, controlSequence);
         controlSequence >>= 1;
     }
     if (_right != NULL)
     {
         controlSequence <<= 1;
         controlSequence |= 1;
-        _right->printBitsHelper(controlSequence);
+        _right->printBitsHelper(massiv, lenMassiv, controlSequence);
     }
     if (_left == NULL && _right == NULL)
     {
         std::cout << controlSequence << std::endl;
-        return;
+        massiv[lenMassiv] = controlSequence;
+        lenMassiv++;
     }
 }
