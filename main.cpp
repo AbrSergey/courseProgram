@@ -11,7 +11,7 @@ const int MAX_CONTROL_SEQUENCE = 10;
 int main()
 {
     int lenArg1 = 3;    // количество аргументов в функции f - полином Жегалкина. <= 31
-    int lenArg2 = 5;    // <= 31
+    int lenArg2 = 4;    // <= 31
 
     // Задание входных данных для 1 части генератора
     int lenResult = 7; // длина в битах случайного числа <= 31
@@ -57,6 +57,8 @@ int main()
 
     cout << "generator = " << result << endl;
 
+    cout << "KEY 2 = " << nextState2 << endl << endl;
+
     // HACK
 
 //    constructTableForAttack(lenResult, lenArg1, lenF1, F1, setStates1);
@@ -66,7 +68,7 @@ int main()
     unsigned int * massContrSeq = new unsigned int [MAX_CONTROL_SEQUENCE];
     int countMassContrSeq = 0;
 
-    for (int cond2 = 0; cond2 < numberStates2; cond2++){
+    for (int cond2 = 0; cond2 <  1/*numberStates2*/; cond2++){
         std::cout << "cond2 = " << cond2 << std::endl;
         countMassContrSeq = DSS(lenResult, result, cond2, lenF2, F2, setStates2, massContrSeq); // lenResult <= 31
 
