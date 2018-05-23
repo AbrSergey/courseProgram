@@ -77,7 +77,7 @@ void TreeNode::printBitsHelper(unsigned int * massiv, int &lenMassiv, unsigned i
     }
     if (_left == NULL && _right == NULL)
     {
-        std::cout << controlSequence << std::endl;
+//        std::cout << controlSequence << std::endl;
         massiv[lenMassiv] = controlSequence;
         lenMassiv++;
     }

@@ -9,6 +9,8 @@
 #include <map>
 #include <list>
 
+unsigned int reverseBits (unsigned int input, int lenInput);
+
 bool polynomZhegalkina(unsigned int arg, unsigned int *summand, int lenSum){
 
     bool result = 0;
@@ -106,12 +108,12 @@ unsigned int generator(int lenRezult,
 
     for (int i = 0; i < lenRezult; i++){
 
-        cond1 = setStates1[cond1];
         cond2 <<= 1;
         cond2 |= polynomZhegalkina(cond1, F1, lenF1);
-        cond2 = setStates2[cond2];
+        cond1 = setStates1[cond1];
         result <<= 1;
         result |= polynomZhegalkina(cond2, F2, lenF2);
+        cond2 = setStates2[cond2];
     }
 
     return result;
@@ -134,7 +136,7 @@ void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int
 
     // computation
 
-    for (unsigned int condInit = 0, resPolZheg = 0; condInit <= numberCond; condInit++, resPolZheg = 0){
+    for (unsigned int condInit = 0, resPolZheg = 0; condInit < numberCond; condInit++, resPolZheg = 0){
         int condTmp = condInit;
 
         // get result from generator A1
@@ -182,28 +184,28 @@ int DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, u
 
     // computation
 
+    // create a tree whose root is initState (cond2)
     Tree tree(initState);
     TreeNode * root = tree.root();
 
     int stage = 1;  // stage of tree
+    result = reverseBits (result, lenResult); // reverse bit srquence of result
     dssHelper (stage, initState, lenResult, result, lenF2, F2, setStates2, root); // start of recursion
 
+    // check whether the tree is empty or not
     if (root->_left == NULL && root->_right == NULL)
     {
-        std::cout << "State = " << initState << " is wrong" << std::endl;
         root = NULL;
         return 0;
     }
 
-    // returning
+    // if the tree is not empty, then we calculate all possible control sequences
+    int countSeq = 0;
+    countSeq = root->printBits(controlSequence);
 
-    int countControlSequence = 0;
+//    tree.print();
 
-    countControlSequence = root->printBits(controlSequence);
-
-    tree.print();
-
-    return countControlSequence;
+    return countSeq;
 
 
 //    std::cout << std::endl << "print bits : " << std::endl;
@@ -244,4 +246,16 @@ void dssHelper(int stage, unsigned int state, int lenRes, unsigned int res,
 
     if (node->_left == NULL && node->_right == NULL && (stage - 1) <= lenRes)
         node->deleteBranch();
+}
+
+unsigned int reverseBits (unsigned int input, int lenInput)
+{
+    unsigned int output = input & 1;
+
+    for (int i = 1; i < lenInput; i++)
+    {
+        output <<= 1;
+        output |= (input & (1 << i)) >> i;
+    }
+    return output;
 }
