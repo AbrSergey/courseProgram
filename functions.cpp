@@ -7,7 +7,6 @@
 #include <assert.h>
 #include "cmath"
 #include <map>
-#include <list>
 
 unsigned int reverseBits (unsigned int input, int lenInput);
 
@@ -120,22 +119,17 @@ unsigned int generator(int lenRezult,
 }
 
 
-void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1)
+void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
+                             std::list<unsigned int> *HashTable)
 {
     // input validation
-
     assert (lenResult <= 31);
     assert (lenArg1 <= 31);
-    assert (lenF1 <= 31);
 
     // initialization
-
     unsigned int numberCond = 1 << lenArg1;
-    unsigned int  sizeHashTable = 1 << lenResult;
-    std::list<unsigned int> *HashTable = new std::list<unsigned int> [sizeHashTable];
 
     // computation
-
     for (unsigned int condInit = 0, resPolZheg = 0; condInit < numberCond; condInit++, resPolZheg = 0){
         int condTmp = condInit;
 
@@ -159,21 +153,6 @@ void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int
             tmpList.push_back(condInit);
             HashTable[resPolZheg] = tmpList;
         }
-    }
-
-    // printing
-
-    std::cout << "lenResult = " << lenResult << std::endl;
-
-    for (unsigned int i = 0; i <  sizeHashTable; i++){
-            std::cout << "H[" << i << "] = ";
-            std::list<unsigned int> tmpList = HashTable[i];
-
-            // displaying the result from the list
-            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
-                std::cout << *it << " ";
-
-            std::cout << std::endl;
     }
 
 }
@@ -201,6 +180,7 @@ int DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, u
 
     // if the tree is not empty, then we calculate all possible control sequences
     int countSeq = 0;
+
     countSeq = root->printBits(controlSequence);
 
 //    tree.print();

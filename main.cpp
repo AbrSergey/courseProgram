@@ -5,38 +5,46 @@
 #include <assert.h>
 #include "functions.h"
 #include "tree.h"
+#include "const.h"
+
+int MAX_CONTROL_SEQUENCE;
 
 using namespace std;
-const int MAX_CONTROL_SEQUENCE = 10;
+
+
+// lAr1 = 2
+// lAr2 = 3
+// lenRes = 28
+// work
 
 int main()
 {
     // WELL-KNOWN PARAMETERS
 
-    int lenArg1 = 2;    // количество аргументов в функции f - полином Жегалкина. <= 31
-    int lenArg2 = 3;    // <= 31
+    int lenArg1 = 10; // quantity arguments in function F - polynom Zhegalkina. <= 31
+    int lenArg2 = 10; // <= 31
 
-    // Задание входных данных для 1 части генератора
-    int lenResult = 5; // длина в битах случайного числа <= 31
+    // input data for 1 part of genertor
+    int lenResult = 20; // length in bits of random number <= 31
 
-    int lenF1 = (1 << lenArg1) - 1;  //количество сумм в функции f - полином Жегалкина  2**lenArg-1
+    unsigned int lenF1 = (1 << lenArg1) - 1;  // quantity sums in F as 2**lenArg-1
 
-    int numberStates1 = 1 << lenArg1;  // количество состояний
+    unsigned int numberStates1 = 1 << lenArg1;  // quantity states
     unsigned int * setStates1 = new unsigned int [numberStates1];
-    for (int i = 0; i < numberStates1 - 1; i++) setStates1[i] = i + 1;   // формируем функцию переходов g
-    setStates1[numberStates1 - 1] = 0;    // формируем функцию переходов g
+    for (unsigned int i = 0; i < numberStates1 - 1; i++) setStates1[i] = i + 1; // create transition function g
+    setStates1[numberStates1 - 1] = 0;    // create transition function g
 
-    unsigned int * F1 = inputRandom(lenArg1, lenF1);   // генерация функции f - полинома Жегалкина
+    unsigned int * F1 = inputRandom(lenArg1, lenF1);   // generation function F
 
-    // Задание входных данных для 2 части генератора
-    int lenF2 = (1 << lenArg2) - 1;
-    int numberStates2 = 1 << lenArg2;
+    // input data for 2 part of generator
+    unsigned int  lenF2 = (1 << lenArg2) - 1;
+    unsigned int  numberStates2 = 1 << lenArg2;
 
     unsigned int * setStates2 = new unsigned int [numberStates2];
-    for (int i = 0; i < numberStates2/2 - 1; i++) setStates2[i] = i + 1;
+    for (unsigned int  i = 0; i < numberStates2/2 - 1; i++) setStates2[i] = i + 1;
     setStates2[numberStates2/2 - 1] = 0;
 
-    for (int i = numberStates2/2; i < numberStates2 - 1; i++) setStates2[i] = i - numberStates2/2 + 1;
+    for (unsigned int  i = numberStates2/2; i < numberStates2 - 1; i++) setStates2[i] = i - numberStates2/2 + 1;
     setStates2[numberStates2 - 1] = 0;
 
     unsigned int * F2 = inputRandom(lenArg2, lenF2);
@@ -44,10 +52,10 @@ int main()
 
     // GENERATOR
 
-    int nextState1 = 0; // key 1
-    int nextState2 = 1; // key 2
+    unsigned int  nextState1 = 0; // key 1
+    unsigned int  nextState2 = 0; // key 2
 
-    assert((nextState1 < numberStates1) && (nextState2 < (numberStates2 << 1)));
+    assert((nextState1 < numberStates1) && (nextState2 < (numberStates2 >> 1)));
 
     // start stopwatch
     srand(time(0));
@@ -72,21 +80,39 @@ int main()
 
     // calculate the sequence of bits as a result of the work of the first part of the generator
     // and fill in the form of a hash table H[sequence_bits]=condition
-    constructTableForAttack(lenResult, lenArg1, lenF1, F1, setStates1);
+    unsigned int  sizeHashTable = 1 << lenResult;
+    std::list<unsigned int> *HashTable = new std::list<unsigned int> [sizeHashTable];
+    constructTableForAttack(lenResult, lenArg1, lenF1, F1, setStates1, HashTable);
+
+//    // printing
+//    std::cout << "lenResult = " << lenResult << std::endl;
+//    for (unsigned int i = 0; i <  sizeHashTable; i++){
+//            std::cout << "H[" << i << "] = ";
+//            std::list<unsigned int> tmpList = HashTable[i];
+
+//            // displaying the result from the list
+//            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+//                std::cout << *it << " ";
+//            std::cout << std::endl;
+//    }
 
     // run a loop in which for each state we compute control sequences with DSS
-    for (int cond2 = 0; cond2 <  numberStates2; cond2++){
-
-        std::cout << "cond2 = " << cond2 << std::endl;
+    for (unsigned int  cond2 = 0; cond2 < (numberStates2 >> 1); cond2++){
 
         // for each state, all possible control sequences of a certain length write in massContSeq
         // and in countMassContrSeq write quantity of control sequences
         // for some states control sequence may not be
+        MAX_CONTROL_SEQUENCE = 100;
         unsigned int * massContrSeq = new unsigned int [MAX_CONTROL_SEQUENCE];
-        int countMassContrSeq = DSS(lenResult, result, cond2, lenF2, F2, setStates2, massContrSeq); // lenResult <= 31
+        unsigned int  countSeq = DSS(lenResult, result, cond2, lenF2, F2, setStates2, massContrSeq); // lenResult <= 31
 
-        for (int i = 0;i < countMassContrSeq; i++){
-            std::cout << i << " control sequence " << " = " << massContrSeq[i] << std::endl;
+        for (unsigned int  i = 0; i < countSeq; i++)
+        {
+            std::list<unsigned int> tmpList = HashTable[massContrSeq[i]];
+
+            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+                std::cout << "Keys : " << *it << " and " << cond2 << std::endl;
         }
     }
 }
+// написан деструктор для дерева, надо ли для нода писать?

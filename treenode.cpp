@@ -1,6 +1,7 @@
 #include <iostream>
 #include <assert.h>
 #include "treenode.h"
+#include "const.h"
 
 void TreeNode::insert(unsigned int data, const bool status)
 {
@@ -52,7 +53,7 @@ void TreeNode::deleteBranchHelper()
 //    assert(std::cout << "Error in deleteBranchHelper()");
 }
 
-int TreeNode::printBits(unsigned int * massiv)
+int TreeNode::printBits(unsigned int * massiv) const
 {
     int lenMassiv = 0;
 
@@ -61,7 +62,7 @@ int TreeNode::printBits(unsigned int * massiv)
     return lenMassiv;
 }
 
-void TreeNode::printBitsHelper(unsigned int * massiv, int &lenMassiv, unsigned int controlSequence)
+void TreeNode::printBitsHelper(unsigned int * massiv, int &lenMassiv, unsigned int controlSequence) const
 {
     if (_left != NULL)
     {
@@ -80,5 +81,8 @@ void TreeNode::printBitsHelper(unsigned int * massiv, int &lenMassiv, unsigned i
 //        std::cout << controlSequence << std::endl;
         massiv[lenMassiv] = controlSequence;
         lenMassiv++;
+
+        // lenMassiv must be less then MAX_CONTROL_SEQUENCE
+        assert (lenMassiv < MAX_CONTROL_SEQUENCE);
     }
 }
