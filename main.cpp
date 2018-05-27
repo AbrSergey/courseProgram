@@ -3,6 +3,8 @@
 #include <ctime>
 #include <cstdlib>
 #include <assert.h>
+#include <vector>
+#include <algorithm>
 #include "functions.h"
 #include "tree.h"
 #include "const.h"
@@ -16,6 +18,17 @@ using namespace std;
 // lenRes = 28
 // work
 
+bool findKeys(std::vector<std::vector<unsigned int> > keys, unsigned int key1, unsigned int key2)
+{
+    std::vector<unsigned int>::iterator itValue;
+
+    itValue = std::find(keys[key1].begin(), keys[key1].end(), key2);
+    if (itValue != keys[key1].end())
+        return true;
+
+    return false;
+}
+
 int main()
 {
     // WELL-KNOWN PARAMETERS
@@ -24,7 +37,7 @@ int main()
     int lenArg2 = 5; // <= 31
 
     // input data for 1 part of genertor
-    int lenResult = 20; // length in bits of random number <= 31
+    int lenResult = 25; // length in bits of random number <= 31
 
     assert(lenArg1 < lenResult);
 
@@ -54,7 +67,7 @@ int main()
     // GENERATOR
 
     unsigned int  nextState1 = 0; // key 1
-    unsigned int  nextState2 = 5; // key 2
+    unsigned int  nextState2 = 4; // key 2
 
     assert((nextState1 < numberStates1) && (nextState2 < (numberStates2 >> 1)));
 
@@ -84,19 +97,22 @@ int main()
     std::list<unsigned int> *hashTable = new std::list<unsigned int> [1 << lenArg1];
     fillHashTable(lenResult, lenArg1, lenF1, F1, setStates1, hashTable);
 
-//    // printing
-//    std::cout << "lenResult = " << lenResult << std::endl;
-//    for (unsigned int i = 0; i <  static_cast<unsigned int>(1 << lenArg1); i++){
-//            std::cout << "H[" << i << "] = ";
-//            std::list<unsigned int> tmpList = hashTable[i];
+    // printing
+    std::cout << "lenResult = " << lenResult << std::endl;
+    for (unsigned int i = 0; i <  static_cast<unsigned int>(1 << lenArg1); i++){
+            std::cout << "H[" << i << "] = ";
+            std::list<unsigned int> tmpList = hashTable[i];
 
-//            // displaying the result from the list
-//            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
-//                std::cout << *it << " ";
-//            std::cout << std::endl;
-//    }
+            // displaying the result from the list
+            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+                std::cout << *it << " ";
+            std::cout << std::endl;
+    }
 
-    // run a loop in which for each state we compute control sequences with DSS
+    // initialize massiv for saving keys
+    std::vector<std::vector<unsigned int> > keys(1 << lenArg1);
+
+    // run a loop in which for each initial state we compute control sequences with DSS
     for (unsigned int  initCondA2 = 0; initCondA2 < (numberStates2 >> 1); initCondA2++)
     {
         // for each state, all possible control sequences of a certain length write in massContSeq
@@ -111,8 +127,27 @@ int main()
             std::list<unsigned int> tmpList = hashTable[hash(massContrSeq[i], lenArg1)];
 
             for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+            {
                 std::cout << "Keys : " << *it << " and " << initCondA2 << std::endl;
+
+                if (!(findKeys(keys, *it, initCondA2)))
+                        keys[*it].insert(keys[*it].end(), initCondA2);
+            }
         }
     }
+
+    int numberKeys = 0;
+
+    for (unsigned int i = 0; i < keys.size(); i++)
+    {
+        std::cout << "Key1 = " << i << " Key2 = ";
+        for (unsigned int j = 0; j < keys[i].size(); j++)
+        {
+            std::cout << keys[i][j] << " ";
+            numberKeys++;
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "NumberKeys = " << numberKeys << std::endl;
 }
 // хороший ли тон в статье добавлять комментарии к коду

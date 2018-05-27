@@ -16,7 +16,7 @@ unsigned int generator (int lenRezult,
                        int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int cond2);
 
 void fillHashTable(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
-                             std::list<unsigned int> *H);
+                             std::list<unsigned int> *hashTable);
 
 unsigned int hash (unsigned int data, unsigned int lenResult);
 

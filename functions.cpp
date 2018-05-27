@@ -120,7 +120,7 @@ unsigned int generator(int lenRezult,
 
 
 void fillHashTable(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
-                             std::list<unsigned int> *H)
+                             std::list<unsigned int> *hashTable)
 {
     // input validation
     assert (lenResult <= 31);
@@ -141,20 +141,19 @@ void fillHashTable(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsi
         }
 
         // create list and add element
-        if (H[hash(resPolZheg, lenArg1)].empty() == true){
+        if (hashTable[hash(resPolZheg, lenArg1)].empty() == true){
             std::list<unsigned int> tmpList;
             tmpList.push_back(condInit);
-            H[hash(resPolZheg, lenArg1)] = tmpList;
+            hashTable[hash(resPolZheg, lenArg1)] = tmpList;
         }
         // add element to the end of list
         else{
             std::list<unsigned int> tmpList;
-            tmpList = H[hash(resPolZheg, lenArg1)];
+            tmpList = hashTable[hash(resPolZheg, lenArg1)];
             tmpList.push_back(condInit);
-            H[hash(resPolZheg, lenArg1)] = tmpList;
+            hashTable[hash(resPolZheg, lenArg1)] = tmpList;
         }
     }
-
 }
 
 int DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int *controlSequence)
