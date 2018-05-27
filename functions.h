@@ -11,12 +11,14 @@ unsigned int * inputRandom (int lenArg, int lenSum);
 
 void timeTestForPolynomZhegalkina ();
 
-unsigned int generator(int lenRezult,
+unsigned int generator (int lenRezult,
                        int lenF1, unsigned int * F1, unsigned int * setStates1, unsigned int cond1,
                        int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int cond2);
 
-void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
-                             std::list<unsigned int> *HashTable);
+void fillHashTable(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
+                             std::list<unsigned int> *H);
+
+unsigned int hash (unsigned int data, unsigned int lenResult);
 
 int DSS (int lenResult, unsigned int result, unsigned int initState,
           int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int * controlSequence);

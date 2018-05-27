@@ -119,8 +119,8 @@ unsigned int generator(int lenRezult,
 }
 
 
-void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
-                             std::list<unsigned int> *HashTable)
+void fillHashTable(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
+                             std::list<unsigned int> *H)
 {
     // input validation
     assert (lenResult <= 31);
@@ -141,17 +141,17 @@ void constructTableForAttack(int lenResult, int lenArg1, int lenF1, unsigned int
         }
 
         // create list and add element
-        if (HashTable[resPolZheg].empty() == true){
+        if (H[hash(resPolZheg, lenArg1)].empty() == true){
             std::list<unsigned int> tmpList;
             tmpList.push_back(condInit);
-            HashTable[resPolZheg] = tmpList;
+            H[hash(resPolZheg, lenArg1)] = tmpList;
         }
         // add element to the end of list
         else{
             std::list<unsigned int> tmpList;
-            tmpList = HashTable[resPolZheg];
+            tmpList = H[hash(resPolZheg, lenArg1)];
             tmpList.push_back(condInit);
-            HashTable[resPolZheg] = tmpList;
+            H[hash(resPolZheg, lenArg1)] = tmpList;
         }
     }
 
@@ -180,16 +180,9 @@ int DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, u
 
     // if the tree is not empty, then we calculate all possible control sequences
     int countSeq = 0;
-
     countSeq = root->printBits(controlSequence);
 
-//    tree.print();
-
     return countSeq;
-
-
-//    std::cout << std::endl << "print bits : " << std::endl;
-//    root->printBits();
 }
 
 void dssHelper(int stage, unsigned int state, int lenRes, unsigned int res,
@@ -238,4 +231,9 @@ unsigned int reverseBits (unsigned int input, int lenInput)
         output |= (input & (1 << i)) >> i;
     }
     return output;
+}
+
+unsigned int hash(unsigned int data, unsigned int lenResult)
+{
+    return data % (1 << lenResult);
 }

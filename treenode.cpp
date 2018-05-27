@@ -48,9 +48,6 @@ void TreeNode::deleteBranchHelper()
         delete this;
         return;
     }
-//    _parent = NULL;
-//    delete this;
-//    assert(std::cout << "Error in deleteBranchHelper()");
 }
 
 int TreeNode::printBits(unsigned int * massiv) const
@@ -78,7 +75,6 @@ void TreeNode::printBitsHelper(unsigned int * massiv, int &lenMassiv, unsigned i
     }
     if (_left == NULL && _right == NULL)
     {
-//        std::cout << controlSequence << std::endl;
         massiv[lenMassiv] = controlSequence;
         lenMassiv++;
 

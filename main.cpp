@@ -11,7 +11,6 @@ int MAX_CONTROL_SEQUENCE;
 
 using namespace std;
 
-
 // lAr1 = 2
 // lAr2 = 3
 // lenRes = 28
@@ -21,11 +20,13 @@ int main()
 {
     // WELL-KNOWN PARAMETERS
 
-    int lenArg1 = 10; // quantity arguments in function F - polynom Zhegalkina. <= 31
-    int lenArg2 = 10; // <= 31
+    int lenArg1 = 5; // quantity arguments in function F - polynom Zhegalkina. <= 31
+    int lenArg2 = 5; // <= 31
 
     // input data for 1 part of genertor
     int lenResult = 20; // length in bits of random number <= 31
+
+    assert(lenArg1 < lenResult);
 
     unsigned int lenF1 = (1 << lenArg1) - 1;  // quantity sums in F as 2**lenArg-1
 
@@ -53,7 +54,7 @@ int main()
     // GENERATOR
 
     unsigned int  nextState1 = 0; // key 1
-    unsigned int  nextState2 = 0; // key 2
+    unsigned int  nextState2 = 5; // key 2
 
     assert((nextState1 < numberStates1) && (nextState2 < (numberStates2 >> 1)));
 
@@ -80,15 +81,14 @@ int main()
 
     // calculate the sequence of bits as a result of the work of the first part of the generator
     // and fill in the form of a hash table H[sequence_bits]=condition
-    unsigned int  sizeHashTable = 1 << lenResult;
-    std::list<unsigned int> *HashTable = new std::list<unsigned int> [sizeHashTable];
-    constructTableForAttack(lenResult, lenArg1, lenF1, F1, setStates1, HashTable);
+    std::list<unsigned int> *hashTable = new std::list<unsigned int> [1 << lenArg1];
+    fillHashTable(lenResult, lenArg1, lenF1, F1, setStates1, hashTable);
 
 //    // printing
 //    std::cout << "lenResult = " << lenResult << std::endl;
-//    for (unsigned int i = 0; i <  sizeHashTable; i++){
+//    for (unsigned int i = 0; i <  static_cast<unsigned int>(1 << lenArg1); i++){
 //            std::cout << "H[" << i << "] = ";
-//            std::list<unsigned int> tmpList = HashTable[i];
+//            std::list<unsigned int> tmpList = hashTable[i];
 
 //            // displaying the result from the list
 //            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
@@ -97,22 +97,22 @@ int main()
 //    }
 
     // run a loop in which for each state we compute control sequences with DSS
-    for (unsigned int  cond2 = 0; cond2 < (numberStates2 >> 1); cond2++){
-
+    for (unsigned int  initCondA2 = 0; initCondA2 < (numberStates2 >> 1); initCondA2++)
+    {
         // for each state, all possible control sequences of a certain length write in massContSeq
         // and in countMassContrSeq write quantity of control sequences
         // for some states control sequence may not be
         MAX_CONTROL_SEQUENCE = 100;
         unsigned int * massContrSeq = new unsigned int [MAX_CONTROL_SEQUENCE];
-        unsigned int  countSeq = DSS(lenResult, result, cond2, lenF2, F2, setStates2, massContrSeq); // lenResult <= 31
+        unsigned int  countSeq = DSS(lenResult, result, initCondA2, lenF2, F2, setStates2, massContrSeq); // lenResult <= 31
 
         for (unsigned int  i = 0; i < countSeq; i++)
         {
-            std::list<unsigned int> tmpList = HashTable[massContrSeq[i]];
+            std::list<unsigned int> tmpList = hashTable[hash(massContrSeq[i], lenArg1)];
 
             for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
-                std::cout << "Keys : " << *it << " and " << cond2 << std::endl;
+                std::cout << "Keys : " << *it << " and " << initCondA2 << std::endl;
         }
     }
 }
-// написан деструктор для дерева, надо ли для нода писать?
+// хороший ли тон в статье добавлять комментарии к коду
