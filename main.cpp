@@ -13,11 +13,6 @@ int MAX_CONTROL_SEQUENCE;
 
 using namespace std;
 
-// lAr1 = 2
-// lAr2 = 3
-// lenRes = 28
-// work
-
 bool findKeys(std::vector<std::vector<unsigned int> > keys, unsigned int key1, unsigned int key2)
 {
     std::vector<unsigned int>::iterator itValue;
@@ -37,7 +32,7 @@ int main()
     int lenArg2 = 5; // <= 31
 
     // input data for 1 part of genertor
-    int lenResult = 25; // length in bits of random number <= 31
+    int lenResult = 17; // length in bits of random number <= 31
 
     assert(lenArg1 < lenResult);
 
@@ -67,7 +62,7 @@ int main()
     // GENERATOR
 
     unsigned int  nextState1 = 0; // key 1
-    unsigned int  nextState2 = 4; // key 2
+    unsigned int  nextState2 = 0; // key 2
 
     assert((nextState1 < numberStates1) && (nextState2 < (numberStates2 >> 1)));
 
@@ -112,6 +107,9 @@ int main()
     // initialize massiv for saving keys
     std::vector<std::vector<unsigned int> > keys(1 << lenArg1);
 
+    // start stopwatch
+    start = std::clock();
+
     // run a loop in which for each initial state we compute control sequences with DSS
     for (unsigned int  initCondA2 = 0; initCondA2 < (numberStates2 >> 1); initCondA2++)
     {
@@ -128,26 +126,31 @@ int main()
 
             for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
             {
-                std::cout << "Keys : " << *it << " and " << initCondA2 << std::endl;
-
+//                std::cout << "Keys : " << *it << " and " << initCondA2 << std::endl;
                 if (!(findKeys(keys, *it, initCondA2)))
                         keys[*it].insert(keys[*it].end(), initCondA2);
             }
         }
     }
 
+    // stop stopwatch
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+
+    std::cout << std::endl;
     int numberKeys = 0;
 
     for (unsigned int i = 0; i < keys.size(); i++)
     {
-        std::cout << "Key1 = " << i << " Key2 = ";
+//        if (keys[i].size() > 0) std::cout << "Key1 = " << i << " Key2 = ";
+
         for (unsigned int j = 0; j < keys[i].size(); j++)
         {
-            std::cout << keys[i][j] << " ";
+//            std::cout << keys[i][j] << " ";
             numberKeys++;
         }
-        std::cout << std::endl;
+//        if (keys[i].size() > 0) std::cout << std::endl;
     }
-    std::cout << "NumberKeys = " << numberKeys << std::endl;
+    std::cout << std::endl << "NumberKeys = " << numberKeys << std::endl
+              << "Time = " << duration << std::endl;
 }
 // хороший ли тон в статье добавлять комментарии к коду
