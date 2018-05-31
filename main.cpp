@@ -1,4 +1,4 @@
-#include <iostream>
+    #include <iostream>
 #include <string.h>
 #include <ctime>
 #include <cstdlib>
@@ -32,7 +32,7 @@ int main()
     int lenArg2 = 5; // <= 31
 
     // input data for 1 part of genertor
-    int lenResult = 17; // length in bits of random number <= 31
+    int lenResult = 31; // length in bits of random number <= 31
 
     assert(lenArg1 < lenResult);
 
@@ -110,6 +110,8 @@ int main()
     // start stopwatch
     start = std::clock();
 
+    int sum = 0;
+
     // run a loop in which for each initial state we compute control sequences with DSS
     for (unsigned int  initCondA2 = 0; initCondA2 < (numberStates2 >> 1); initCondA2++)
     {
@@ -124,14 +126,23 @@ int main()
         {
             std::list<unsigned int> tmpList = hashTable[hash(massContrSeq[i], lenArg1)];
 
+            sum += tmpList.size();
+//            std::cout << "len(tmpList) = " << tmpList.size() << endl;
             for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
             {
 //                std::cout << "Keys : " << *it << " and " << initCondA2 << std::endl;
+//                std::cout << "massContrSeq[i] = " << massContrSeq[i] << std::endl;
+//                std::cout << "hash(massContrSeq[i] = " << hash(massContrSeq[i], lenArg1) << std::endl;
                 if (!(findKeys(keys, *it, initCondA2)))
                         keys[*it].insert(keys[*it].end(), initCondA2);
+
+//                std::cout << std::endl;
             }
         }
+
     }
+
+    std::cout << "sum = " << sum << std::endl;
 
     // stop stopwatch
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;

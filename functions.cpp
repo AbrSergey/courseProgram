@@ -234,5 +234,26 @@ unsigned int reverseBits (unsigned int input, int lenInput)
 
 unsigned int hash(unsigned int data, unsigned int lenResult)
 {
-    return data % (1 << lenResult);
+    unsigned int r = data >> 16;
+    unsigned int l = data << 16;
+    unsigned int dL = l + (r << 16);
+    unsigned int dR = r + (l >> 16);
+    unsigned int result = dL+dR;
+
+    l = (result >> 24) << 24;
+    r = ((result >> 16) << 24);
+    dL = l + r;
+    dR = (l >> 8) + (r >> 8);
+
+    unsigned int r_R = (result << 16) >> 16;
+    result = dL + dR;
+
+    l = (r_R >> 8) << 8;
+    r = (r_R << 24) >> 24;
+
+    dL = l + (r << 8);
+    dR = (l >> 8) + r;
+    result += dL+dR;
+
+    return result % (1 << lenResult);
 }
