@@ -26,13 +26,20 @@ bool findKeys(std::vector<std::vector<unsigned int> > keys, unsigned int key1, u
 
 int main()
 {
+//    unsigned int g = hash(0b0100011100011011011100100001001, 31);
+
+//    std::cout << "g = " << g << std::endl;
+
+//}
+//    /*
+
     // WELL-KNOWN PARAMETERS
 
     int lenArg1 = 5; // quantity arguments in function F - polynom Zhegalkina. <= 31
     int lenArg2 = 5; // <= 31
 
     // input data for 1 part of genertor
-    int lenResult = 31; // length in bits of random number <= 31
+    int lenResult = 15; // length in bits of random number <= 31
 
     assert(lenArg1 < lenResult);
 
@@ -90,7 +97,9 @@ int main()
     // calculate the sequence of bits as a result of the work of the first part of the generator
     // and fill in the form of a hash table H[sequence_bits]=condition
     std::list<unsigned int> *hashTable = new std::list<unsigned int> [1 << lenArg1];
+    std::list<unsigned int> *hashTableTest = new std::list<unsigned int> [1 << lenResult];
     fillHashTable(lenResult, lenArg1, lenF1, F1, setStates1, hashTable);
+    fillHashTableTest(lenResult, lenArg1, lenF1, F1, setStates1, hashTableTest);
 
     // printing
     std::cout << "lenResult = " << lenResult << std::endl;
@@ -124,6 +133,7 @@ int main()
 
         for (unsigned int  i = 0; i < countSeq; i++)
         {
+            // WiTH COLLISION
             std::list<unsigned int> tmpList = hashTable[hash(massContrSeq[i], lenArg1)];
 
             sum += tmpList.size();
@@ -132,7 +142,7 @@ int main()
             {
 //                std::cout << "Keys : " << *it << " and " << initCondA2 << std::endl;
 //                std::cout << "massContrSeq[i] = " << massContrSeq[i] << std::endl;
-//                std::cout << "hash(massContrSeq[i] = " << hash(massContrSeq[i], lenArg1) << std::endl;
+                std::cout << "hash(massContrSeq[i] = " << hash(massContrSeq[i], lenArg1) << std::endl;
                 if (!(findKeys(keys, *it, initCondA2)))
                         keys[*it].insert(keys[*it].end(), initCondA2);
 
@@ -161,7 +171,64 @@ int main()
         }
 //        if (keys[i].size() > 0) std::cout << std::endl;
     }
-    std::cout << std::endl << "NumberKeys = " << numberKeys << std::endl
-              << "Time = " << duration << std::endl;
+    std::cout << std::endl << "NumberKeysWithColl = " << numberKeys << std::endl;
+//              << "Time = " << duration << std::endl;
+
+    //***********************************************************************************************************************
+
+    // printing Test
+//    std::cout << "************************************" << std::endl;
+//    for (unsigned int i = 0; i <  static_cast<unsigned int>(1 << lenResult); i++){
+//            std::cout << "H[" << i << "] = ";
+//            std::list<unsigned int> tmpList = hashTableTest[i];
+
+//            // displaying the result from the list
+//            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+//                std::cout << *it << " ";
+//            std::cout << std::endl;
+//    }
+
+    // initialize massiv for saving keys
+    std::vector<std::vector<unsigned int> > keysTest(1 << lenArg1);
+
+    for (unsigned int  initCondA2 = 0; initCondA2 < (numberStates2 >> 1); initCondA2++)
+    {
+        MAX_CONTROL_SEQUENCE = 100;
+        unsigned int * massContrSeq = new unsigned int [MAX_CONTROL_SEQUENCE];
+        unsigned int  countSeq = DSS(lenResult, result, initCondA2, lenF2, F2, setStates2, massContrSeq);\
+
+        for (unsigned int  i = 0; i < countSeq; i++)
+        {
+            std::list<unsigned int> tmpList = hashTableTest[massContrSeq[i]];
+
+            for (std::list<unsigned int>::iterator it = tmpList.begin(); it != tmpList.end(); it++)
+            {
+//                std::cout << "Keys : " << *it << " and " << initCondA2 << std::endl;
+//                std::cout << "massContrSeq[i] = " << massContrSeq[i] << std::endl;
+//                std::cout << "hash(massContrSeq[i] = " << hash(massContrSeq[i], lenArg1) << std::endl;
+                if (!(findKeys(keysTest, *it, initCondA2)))
+                        keysTest[*it].insert(keysTest[*it].end(), initCondA2);
+
+//                std::cout << std::endl;
+            }
+        }
+
+    }
+
+    std::cout << std::endl;
+    int numberKeysTest = 0;
+
+    for (unsigned int i = 0; i < keysTest.size(); i++)
+    {
+//        if (keys[i].size() > 0) std::cout << "Key1 = " << i << " Key2 = ";
+
+        for (unsigned int j = 0; j < keysTest[i].size(); j++)
+        {
+//            std::cout << keys[i][j] << " ";
+            numberKeysTest++;
+        }
+//        if (keys[i].size() > 0) std::cout << std::endl;
+    }
+    std::cout << std::endl << "NumberKeysTest = " << numberKeysTest << std::endl;
 }
 // хороший ли тон в статье добавлять комментарии к коду

@@ -7,6 +7,7 @@
 #include <assert.h>
 #include "cmath"
 #include <map>
+#include <openssl/sha.h>
 
 unsigned int reverseBits (unsigned int input, int lenInput);
 
@@ -156,6 +157,43 @@ void fillHashTable(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsi
     }
 }
 
+void fillHashTableTest(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
+                             std::list<unsigned int> *hashTable)
+{
+    // input validation
+    assert (lenResult <= 31);
+    assert (lenArg1 <= 31);
+
+    // initialization
+    unsigned int numberCond = 1 << lenArg1;
+
+    // computation
+    for (unsigned int condInit = 0, resPolZheg = 0; condInit < numberCond; condInit++, resPolZheg = 0){
+        int condTmp = condInit;
+
+        // get result from generator A1
+        for (int i = 0; i < lenResult; i++){
+            resPolZheg |= polynomZhegalkina(condTmp, F1, lenF1);
+            condTmp = setStates1[condTmp];
+            if (i < lenResult - 1) resPolZheg <<= 1;
+        }
+
+        // create list and add element
+        if (hashTable[resPolZheg].empty() == true){
+            std::list<unsigned int> tmpList;
+            tmpList.push_back(condInit);
+            hashTable[resPolZheg] = tmpList;
+        }
+        // add element to the end of list
+        else{
+            std::list<unsigned int> tmpList;
+            tmpList = hashTable[resPolZheg];
+            tmpList.push_back(condInit);
+            hashTable[resPolZheg] = tmpList;
+        }
+    }
+}
+
 int DSS(int lenResult, unsigned int result, unsigned int initState, int lenF2, unsigned int * F2, unsigned int * setStates2, unsigned int *controlSequence)
 {
     assert (lenResult > 0 && lenResult <= 31);
@@ -234,26 +272,70 @@ unsigned int reverseBits (unsigned int input, int lenInput)
 
 unsigned int hash(unsigned int data, unsigned int lenResult)
 {
-    unsigned int r = data >> 16;
-    unsigned int l = data << 16;
-    unsigned int dL = l + (r << 16);
-    unsigned int dR = r + (l >> 16);
-    unsigned int result = dL+dR;
+//    unsigned int r = data >> 16;
+//    unsigned int l = data << 16;
+//    unsigned int dL = l + (r << 16);
+//    unsigned int dR = r + (l >> 16);
+//    unsigned int result = dL+dR;
 
-    l = (result >> 24) << 24;
-    r = ((result >> 16) << 24);
-    dL = l + r;
-    dR = (l >> 8) + (r >> 8);
+//    l = (result >> 24) << 24;
+//    r = ((result >> 16) << 24);
+//    dL = l + r;
+//    dR = (l >> 8) + (r >> 8);
 
-    unsigned int r_R = (result << 16) >> 16;
-    result = dL + dR;
+//    unsigned int r_R = (result << 16) >> 16;
+//    result = dL + dR;
 
-    l = (r_R >> 8) << 8;
-    r = (r_R << 24) >> 24;
+//    l = (r_R >> 8) << 8;
+//    r = (r_R << 24) >> 24;
 
-    dL = l + (r << 8);
-    dR = (l >> 8) + r;
-    result += dL+dR;
+//    dL = l + (r << 8);
+//    dR = (l >> 8) + r;
+//    result += dL+dR;
+// ewfrgzzzzzzzzzzzzzzz
+    unsigned int l, r, res = data;
 
-    return result % (1 << lenResult);
+    // i - quantity of bases
+    for (int i = 1, k = 1; i <= 4; i <<= 1, k++)
+    {
+        // compute b
+        unsigned int b = 0;
+        for (int t = 0; t < k; t++)
+            b += 16 >> t;
+
+        // compute into bases
+        for (int j = 0; j < i; j++)
+        {
+            l = ((res << ((32 >> k) * j + (32 >> k))) >> b); // << ((32 - (32 >> (k - 1))) - j * (32 >> k) + (32 >> k));
+            r = ((res << (32 >> (k - 1)) * j) >> b); // << ((32 - (32 >> (k - 1))) - j * (32 >> k));
+            unsigned int sum = l + r;
+            unsigned int min = l - r;
+            sum <<= (32 >> k);
+            sum >>= (32 >> k);
+            min <<= (32 >> k);
+            min >>= (32 >> k);
+
+            unsigned int tmp = sum + (min << (32 >> k));
+            res += tmp << (32 >> (k - 1)) * i;
+        }
+    }
+
+    res = res % (1 << lenResult);
+
+    return res;
+
+
+//    unsigned char re[0];
+//    unsigned char c[4];
+//    c[0] = data & 0xFF;
+//    c[1] = (data >> 8) & 0xFF;
+//    c[2] = (data >> 16) & 0xFF;
+//    c[3] = (data >> 24) & 0xFF;
+
+//    SHA1(c, 4, re);
+
+//    unsigned int y = static_cast<unsigned int>( *re );
+
+//    return y;
+
 }

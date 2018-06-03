@@ -18,6 +18,9 @@ unsigned int generator (int lenRezult,
 void fillHashTable(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
                              std::list<unsigned int> *hashTable);
 
+void fillHashTableTest(int lenResult, int lenArg1, int lenF1, unsigned int *F1, unsigned int *setStates1,
+                             std::list<unsigned int> *hashTable);
+
 unsigned int hash (unsigned int data, unsigned int lenResult);
 
 int DSS (int lenResult, unsigned int result, unsigned int initState,
